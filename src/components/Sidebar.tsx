@@ -57,7 +57,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) =
             </div>
           </div>
           <div className="mt-2 text-[10px] text-slate-500 uppercase tracking-widest font-semibold">
-            Govt Medical College
+            SSMC Rewa
           </div>
         </div>
 

@@ -470,13 +470,13 @@ export const Requisitions: React.FC = () => {
                 DEPARTMENT OF CARDIOLOGY
               </h2>
               <h3 className="text-sm font-semibold tracking-wider uppercase text-slate-800 font-serif">
-                GOVERNMENT MEDICAL COLLEGE & HOSPITAL
+                SHYAM SHAH MEDICAL COLLEGE & ASSOCIATED HOSPITALS, REWA
               </h3>
               <p className="text-xs text-slate-650 italic font-sans">
                 Cardiac Catheterization Laboratory Stock Requisition Sheet
               </p>
               <p className="text-[10px] text-slate-400 font-sans tracking-wide">
-                GMC Cardiology Complex, Ground Floor, Sector 32-A
+                SSMC Cardiology Wing, Cath Lab Block, Rewa (M.P.)
               </p>
             </div>
 

@@ -317,7 +317,7 @@ export const Reports: React.FC = () => {
           {/* Print Letterhead block */}
           <div className="hidden print:block text-center border-b-2 border-slate-900 pb-3 mb-6">
             <h2 className="text-base font-bold uppercase font-serif">DEPARTMENT OF CARDIOLOGY</h2>
-            <h3 className="text-xs font-bold uppercase font-serif">GOVERNMENT MEDICAL COLLEGE & HOSPITAL</h3>
+            <h3 className="text-xs font-bold uppercase font-serif">SHYAM SHAH MEDICAL COLLEGE & ASSOCIATED HOSPITALS, REWA</h3>
             <p className="text-[10px] text-slate-550 mt-1">Stock-On-Hand Valuation Statement — Generated {new Date().toLocaleDateString()}</p>
           </div>
 
@@ -397,7 +397,7 @@ export const Reports: React.FC = () => {
 
           <div className="hidden print:block text-center border-b-2 border-slate-900 pb-3 mb-6">
             <h2 className="text-base font-bold uppercase font-serif">DEPARTMENT OF CARDIOLOGY</h2>
-            <h3 className="text-xs font-bold uppercase font-serif">GOVERNMENT MEDICAL COLLEGE & HOSPITAL</h3>
+            <h3 className="text-xs font-bold uppercase font-serif">SHYAM SHAH MEDICAL COLLEGE & ASSOCIATED HOSPITALS, REWA</h3>
             <p className="text-[10px] text-slate-550 mt-1">
               Consumables Consumption Report (Grouped by {consumptionGroup}) — Generated {new Date().toLocaleDateString()}
             </p>
@@ -455,7 +455,7 @@ export const Reports: React.FC = () => {
 
           <div className="hidden print:block text-center border-b-2 border-slate-900 pb-3 mb-6">
             <h2 className="text-base font-bold uppercase font-serif">DEPARTMENT OF CARDIOLOGY</h2>
-            <h3 className="text-xs font-bold uppercase font-serif">GOVERNMENT MEDICAL COLLEGE & HOSPITAL</h3>
+            <h3 className="text-xs font-bold uppercase font-serif">SHYAM SHAH MEDICAL COLLEGE & ASSOCIATED HOSPITALS, REWA</h3>
             <p className="text-[10px] text-slate-550 mt-1">Expiry Audit Registry — Generated {new Date().toLocaleDateString()}</p>
           </div>
 
@@ -544,7 +544,7 @@ export const Reports: React.FC = () => {
 
             <div className="hidden print:block text-center border-b-2 border-slate-900 pb-3 mb-6">
               <h2 className="text-base font-bold uppercase font-serif">DEPARTMENT OF CARDIOLOGY</h2>
-              <h3 className="text-xs font-bold uppercase font-serif">GOVERNMENT MEDICAL COLLEGE & HOSPITAL</h3>
+              <h3 className="text-xs font-bold uppercase font-serif">SHYAM SHAH MEDICAL COLLEGE & ASSOCIATED HOSPITALS, REWA</h3>
               <p className="text-[10px] text-slate-550 mt-1">PMJAY Package Cost Variance Audit Sheet — Generated {new Date().toLocaleDateString()}</p>
             </div>
 
@@ -698,7 +698,7 @@ export const Reports: React.FC = () => {
 
           <div className="hidden print:block text-center border-b-2 border-slate-900 pb-3 mb-6">
             <h2 className="text-base font-bold uppercase font-serif">DEPARTMENT OF CARDIOLOGY</h2>
-            <h3 className="text-xs font-bold uppercase font-serif">GOVERNMENT MEDICAL COLLEGE & HOSPITAL</h3>
+            <h3 className="text-xs font-bold uppercase font-serif">SHYAM SHAH MEDICAL COLLEGE & ASSOCIATED HOSPITALS, REWA</h3>
             <p className="text-[10px] text-slate-550 mt-1">
               Active Stock Ledger Audit Trail Registry ({ledgerStartDate} to {ledgerEndDate}) — Generated {new Date().toLocaleDateString()}
             </p>
