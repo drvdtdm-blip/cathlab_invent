@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../db/db';
+import { db, type Procedure } from '../db/db';
+import { ProcedurePrintModal } from '../components/ProcedurePrintModal';
 import { 
   DollarSign, 
   AlertTriangle, 
@@ -17,6 +18,7 @@ interface DashboardProps {
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
+  const [activeProcedure, setActiveProcedure] = useState<Procedure | null>(null);
   // Live query for metrics
   const metrics = useLiveQuery(async () => {
     const items = await db.items.toArray();
@@ -267,7 +269,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
                 </thead>
                 <tbody className="divide-y divide-slate-100 font-medium">
                   {metrics.recentProcedures.map((proc) => (
-                    <tr key={proc.id} className="hover:bg-slate-50/50">
+                    <tr key={proc.id} className="hover:bg-slate-50/50 cursor-pointer" onClick={() => setActiveProcedure(proc)}>
                       <td className="py-2.5 px-3 text-slate-500">{proc.date}</td>
                       <td className="py-2.5 px-3 text-slate-900 font-semibold">{proc.caseId}</td>
                       <td className="py-2.5 px-3 text-slate-700">{proc.patientRef}</td>
@@ -296,6 +298,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
         </div>
 
       </div>
+
+      {activeProcedure && (
+        <ProcedurePrintModal 
+          procedure={activeProcedure} 
+          onClose={() => setActiveProcedure(null)} 
+        />
+      )}
     </div>
   );
 };

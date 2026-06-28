@@ -417,6 +417,12 @@ export const Requisitions: React.FC = () => {
                     <Trash2 className="w-3.5 h-3.5" /> Delete Draft
                   </button>
                   <button
+                    onClick={() => window.print()}
+                    className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold px-3.5 py-2 rounded-lg text-xs"
+                  >
+                    <Printer className="w-3.5 h-3.5" /> Print Draft PDF
+                  </button>
+                  <button
                     onClick={handleSaveDraft}
                     className="bg-slate-800 text-white font-bold px-3.5 py-2 rounded-lg text-xs hover:bg-slate-900"
                   >
@@ -478,6 +484,11 @@ export const Requisitions: React.FC = () => {
               <p className="text-[10px] text-slate-400 font-sans tracking-wide">
                 SSMC Cardiology Wing, Cath Lab Block, Rewa (M.P.)
               </p>
+              {selectedReq.status === 'draft' && (
+                <div className="mt-3 bg-red-50 border border-red-200 text-red-700 font-bold px-3 py-1.5 text-[9px] uppercase tracking-widest text-center rounded">
+                  *** DRAFT REQUISITION — FOR REVIEW ONLY (NOT FOR SUPPLY) ***
+                </div>
+              )}
             </div>
 
             {/* Requisition Metadata Details */}

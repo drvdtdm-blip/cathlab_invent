@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../db/db';
+import { db, type Procedure } from '../db/db';
 import { exportToCSV } from '../utils/csv';
+import { ProcedurePrintModal } from '../components/ProcedurePrintModal';
 import { 
   BarChart3, 
   DollarSign, 
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react';
 
 export const Reports: React.FC = () => {
+  const [activeProcedure, setActiveProcedure] = useState<Procedure | null>(null);
   // Queries
   const items = useLiveQuery(() => db.items.toArray(), []) || [];
   const procedures = useLiveQuery(() => db.procedures.toArray(), []) || [];
@@ -167,7 +169,8 @@ export const Reports: React.FC = () => {
         ceiling: p.pmjayCeilingAmount || 0,
         actualCost: p.totalCost,
         variance: (p.pmjayCeilingAmount || 0) - p.totalCost,
-        reason: p.overCeilingReason || 'No justification provided'
+        reason: p.overCeilingReason || 'No justification provided',
+        originalProcedure: p
       }));
 
     return { summaries, overCeilingCases };
@@ -359,6 +362,19 @@ export const Reports: React.FC = () => {
               </table>
             </div>
           </div>
+          {/* Official Signatures for records */}
+          <div className="hidden print:grid grid-cols-2 gap-8 pt-16 text-xs font-sans font-medium text-slate-700">
+            <div>
+              <div className="border-t border-slate-500 pt-2 w-48 text-center">
+                Prepared by: Cath Lab Store In-charge
+              </div>
+            </div>
+            <div className="flex flex-col items-end">
+              <div className="border-t border-slate-500 pt-2 w-48 text-center">
+                Verified by: HOD, Cardiology
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -434,6 +450,19 @@ export const Reports: React.FC = () => {
                 )}
               </tbody>
             </table>
+          </div>
+          {/* Official Signatures for records */}
+          <div className="hidden print:grid grid-cols-2 gap-8 pt-16 text-xs font-sans font-medium text-slate-700">
+            <div>
+              <div className="border-t border-slate-500 pt-2 w-48 text-center">
+                Prepared by: Cath Lab Store In-charge
+              </div>
+            </div>
+            <div className="flex flex-col items-end">
+              <div className="border-t border-slate-500 pt-2 w-48 text-center">
+                Verified by: HOD, Cardiology
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -521,6 +550,19 @@ export const Reports: React.FC = () => {
                 )}
               </tbody>
             </table>
+          </div>
+          {/* Official Signatures for records */}
+          <div className="hidden print:grid grid-cols-2 gap-8 pt-16 text-xs font-sans font-medium text-slate-700">
+            <div>
+              <div className="border-t border-slate-500 pt-2 w-48 text-center">
+                Prepared by: Cath Lab Store In-charge
+              </div>
+            </div>
+            <div className="flex flex-col items-end">
+              <div className="border-t border-slate-500 pt-2 w-48 text-center">
+                Verified by: HOD, Cardiology
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -623,7 +665,7 @@ export const Reports: React.FC = () => {
                     </tr>
                   ) : (
                     overCeilingCases.map((c, idx) => (
-                      <tr key={idx} className="hover:bg-slate-50/50">
+                      <tr key={idx} className="hover:bg-slate-50/50 cursor-pointer" onClick={() => setActiveProcedure(c.originalProcedure)}>
                         <td className="py-3 px-4 font-bold text-slate-900 font-mono">{c.caseId}</td>
                         <td className="py-3 px-4 text-slate-500 font-mono">{c.date}</td>
                         <td className="py-3 px-4 font-mono">{c.patientRef}</td>
@@ -642,6 +684,19 @@ export const Reports: React.FC = () => {
                   )}
                 </tbody>
               </table>
+            </div>
+          </div>
+          {/* Official Signatures for records */}
+          <div className="hidden print:grid grid-cols-2 gap-8 pt-16 text-xs font-sans font-medium text-slate-700">
+            <div>
+              <div className="border-t border-slate-500 pt-2 w-48 text-center">
+                Prepared by: Cath Lab Store In-charge
+              </div>
+            </div>
+            <div className="flex flex-col items-end">
+              <div className="border-t border-slate-500 pt-2 w-48 text-center">
+                Verified by: HOD, Cardiology
+              </div>
             </div>
           </div>
         </div>
@@ -771,9 +826,28 @@ export const Reports: React.FC = () => {
               </table>
             </div>
           </div>
+          {/* Official Signatures for records */}
+          <div className="hidden print:grid grid-cols-2 gap-8 pt-16 text-xs font-sans font-medium text-slate-700">
+            <div>
+              <div className="border-t border-slate-500 pt-2 w-48 text-center">
+                Prepared by: Cath Lab Store In-charge
+              </div>
+            </div>
+            <div className="flex flex-col items-end">
+              <div className="border-t border-slate-500 pt-2 w-48 text-center">
+                Verified by: HOD, Cardiology
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
+      {activeProcedure && (
+        <ProcedurePrintModal 
+          procedure={activeProcedure} 
+          onClose={() => setActiveProcedure(null)} 
+        />
+      )}
     </div>
   );
 };
