@@ -257,43 +257,64 @@ export const Settings: React.FC<SettingsProps> = ({ onResetSuccess }) => {
                   Expected Consumables Template
                 </h3>
 
-                {/* Add Item searcher */}
-                <div className="relative">
-                  <div className="relative">
-                    <Search className="absolute left-2 top-2.5 w-3.5 h-3.5 text-slate-400" />
-                    <input
-                      type="text"
-                      placeholder="Search and append catalog item to this template..."
-                      value={searchQuery}
-                      onChange={(e) => {
-                        setSearchQuery(e.target.value);
-                        setShowSearchResults(true);
-                      }}
-                      className="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white"
-                    />
+                {/* Add Item searcher / selector */}
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="relative flex-1">
+                    <div className="relative">
+                      <Search className="absolute left-2.5 top-2.5 w-3.5 h-3.5 text-slate-400" />
+                      <input
+                        type="text"
+                        placeholder="Search and append catalog item to this template..."
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value);
+                          setShowSearchResults(true);
+                        }}
+                        className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-xs bg-slate-50 focus:bg-white"
+                      />
+                    </div>
+
+                    {showSearchResults && searchQuery && (
+                      <div className="absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-30 max-h-40 overflow-y-auto divide-y divide-slate-100 text-xs">
+                        {itemSearchResults.length === 0 ? (
+                          <div className="p-2 text-center text-slate-450">No matching items</div>
+                        ) : (
+                          itemSearchResults.map(item => (
+                            <button
+                              key={item.id}
+                              type="button"
+                              onClick={() => addPkgItem(item)}
+                              className="w-full text-left p-2 hover:bg-slate-50 flex justify-between items-center transition-colors font-sans"
+                            >
+                              <div>
+                                <div className="font-bold">{item.name}</div>
+                                <div className="text-[10px] text-slate-500 font-mono">Size: {item.modelSize}</div>
+                              </div>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    )}
                   </div>
 
-                  {showSearchResults && searchQuery && (
-                    <div className="absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-25 max-h-40 overflow-y-auto divide-y divide-slate-100 text-xs">
-                      {itemSearchResults.length === 0 ? (
-                        <div className="p-2 text-center text-slate-450">No matching items</div>
-                      ) : (
-                        itemSearchResults.map(item => (
-                          <button
-                            key={item.id}
-                            type="button"
-                            onClick={() => addPkgItem(item)}
-                            className="w-full text-left p-2 hover:bg-slate-50 flex justify-between items-center transition-colors font-sans"
-                          >
-                            <div>
-                              <div className="font-bold">{item.name}</div>
-                              <div className="text-[10px] text-slate-500 font-mono">Size: {item.modelSize}</div>
-                            </div>
-                          </button>
-                        ))
-                      )}
-                    </div>
-                  )}
+                  <select
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val) {
+                        const item = allItems.find(i => i.id === Number(val));
+                        if (item) addPkgItem(item);
+                        e.target.value = ""; // reset
+                      }
+                    }}
+                    className="border border-slate-200 rounded-lg text-xs px-2.5 py-2 bg-slate-50 hover:bg-white cursor-pointer w-full sm:w-48 font-sans"
+                  >
+                    <option value="">-- Quick Add Catalog Item --</option>
+                    {allItems.map(item => (
+                      <option key={item.id} value={item.id}>
+                        {item.name} ({item.modelSize})
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Items Table inside Editor */}
