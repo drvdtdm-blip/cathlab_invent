@@ -223,6 +223,7 @@ export const NewCase: React.FC<NewCaseProps> = ({ onSuccess }) => {
         const procedureCase: Procedure = {
           caseId,
           date,
+          timestamp: Date.now(),
           patientRef,
           procedureType,
           operator,

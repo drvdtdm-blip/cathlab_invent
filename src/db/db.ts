@@ -40,6 +40,7 @@ export interface Procedure {
   id?: number;
   caseId: string;
   date: string; // YYYY-MM-DD
+  timestamp?: number; // epoch ms (added for audit lock check)
   patientRef: string; // "Initials / UHID" format
   procedureType: string;
   operator: string;
