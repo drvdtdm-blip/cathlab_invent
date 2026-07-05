@@ -16,6 +16,7 @@ import {
 
 export const Reports: React.FC = () => {
   const [activeProcedure, setActiveProcedure] = useState<Procedure | null>(null);
+  const [exportMonth, setExportMonth] = useState(new Date().toISOString().substring(0, 7)); // YYYY-MM
   // Queries
   const items = useLiveQuery(() => db.items.toArray(), []) || [];
   const procedures = useLiveQuery(() => db.procedures.toArray(), []) || [];
@@ -204,6 +205,52 @@ export const Reports: React.FC = () => {
       { key: 'reason', label: 'Justification Reason' }
     ];
     exportToCSV(overCeilingCases, headers, 'over_ceiling_procedures');
+  };
+
+  const handleExportMonthlyClaims = () => {
+    const monthlyCases = procedures.filter(p => p.date.startsWith(exportMonth));
+    if (monthlyCases.length === 0) {
+      alert(`No cases logged for the month ${exportMonth}.`);
+      return;
+    }
+    
+    const exportData = monthlyCases.map(p => {
+      const itemsListStr = p.itemsConsumed
+        .map(i => `${i.name} (Batch: ${i.batchLotNo}, Qty: ${i.quantity}, Cost: ${formatRupees(i.unitCost)})`)
+        .join('; ');
+        
+      return {
+        'Case ID': p.caseId,
+        'Date': p.date,
+        'Patient Reference': p.patientRef,
+        'Procedure Type': p.procedureType,
+        'Consultant Cardiologist': p.operator,
+        'Technician (Data Entry)': p.technician || '—',
+        'Linked PMJAY Package': p.pmjayPackageName || 'N/A (General)',
+        'Ceiling Limit (INR)': p.pmjayCeilingAmount || 0,
+        'Actual Consumables Cost (INR)': p.totalCost,
+        'Is Over Ceiling': p.overCeiling ? 'YES' : 'NO',
+        'Over-Ceiling Justification': p.overCeilingReason || '—',
+        'Consumed Items Details': itemsListStr
+      };
+    });
+
+    const headers = [
+      { key: 'Case ID', label: 'Case ID' },
+      { key: 'Date', label: 'Date' },
+      { key: 'Patient Reference', label: 'Patient Reference' },
+      { key: 'Procedure Type', label: 'Procedure Type' },
+      { key: 'Consultant Cardiologist', label: 'Consultant Cardiologist' },
+      { key: 'Technician (Data Entry)', label: 'Technician (Data Entry)' },
+      { key: 'Linked PMJAY Package', label: 'Linked PMJAY Package' },
+      { key: 'Ceiling Limit (INR)', label: 'Ceiling Limit (INR)' },
+      { key: 'Actual Consumables Cost (INR)', label: 'Actual Consumables Cost (INR)' },
+      { key: 'Is Over Ceiling', label: 'Is Over Ceiling' },
+      { key: 'Over-Ceiling Justification', label: 'Over-Ceiling Justification' },
+      { key: 'Consumed Items Details', label: 'Consumed Items Details' }
+    ];
+
+    exportToCSV(exportData, headers, `PMJAY_Claims_Report_${exportMonth}`);
   };
 
   // ==================== 5. Audit Ledger Calculations ====================
@@ -572,6 +619,38 @@ export const Reports: React.FC = () => {
       {/* ========================================================================= */}
       {activeTab === 'variance' && (
         <div className="space-y-6 print-only-container text-left">
+          
+          {/* Monthly Claims CSV Export Panel */}
+          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4 no-print">
+            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider m-0 flex items-center gap-1.5">
+              <Download className="w-4 h-4 text-blue-500" />
+              Monthly Claims Audit Export Desk
+            </h4>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Export all logged procedure consumable files for a specific month as a formatted CSV claims registry spreadsheet to submit directly to State Health Authorities for PMJAY claims reimbursement auditing.
+            </p>
+            <div className="flex flex-col sm:flex-row items-end gap-3 max-w-md">
+              <div className="flex-1 w-full">
+                <label className="block text-[10px] uppercase tracking-wider font-semibold text-slate-400 mb-1">
+                  Select Billing Month
+                </label>
+                <input
+                  type="month"
+                  value={exportMonth}
+                  onChange={(e) => setExportMonth(e.target.value)}
+                  className="w-full p-2 border border-slate-200 rounded-lg text-xs"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={handleExportMonthlyClaims}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-xs flex items-center gap-1.5 w-full sm:w-auto shadow-sm shadow-blue-500/10 cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5" /> Export Claims CSV
+              </button>
+            </div>
+          </div>
+
           {/* Section 1: Package aggregations */}
           <div className="space-y-3">
             <div className="flex justify-between items-center no-print">

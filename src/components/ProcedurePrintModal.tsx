@@ -293,7 +293,10 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
               <p className="text-slate-450 font-bold uppercase tracking-wider text-[9px]">Case Details</p>
               <p className="font-semibold text-slate-800 mt-1">Case ID: <span className="font-mono">{procedure.caseId}</span></p>
               <p className="text-slate-700 mt-1">Date: {procedure.date}</p>
-              <p className="text-slate-700 mt-1">Operator: {procedure.operator}</p>
+              <p className="text-slate-700 mt-1">Consultant: {procedure.operator}</p>
+              {procedure.technician && (
+                <p className="text-slate-700 mt-1">Technician: {procedure.technician}</p>
+              )}
             </div>
             <div>
               <p className="text-slate-450 font-bold uppercase tracking-wider text-[9px]">Patient & Billing</p>
@@ -518,6 +521,10 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
           </div>
           <div className="space-y-1.5 text-right">
             <div>Procedure Type: <span className="font-semibold">{procedure.procedureType}</span></div>
+            <div>Consultant Cardiologist: <span className="font-semibold">{procedure.operator}</span></div>
+            {procedure.technician && (
+              <div>Cath Lab Technician: <span className="font-semibold">{procedure.technician}</span></div>
+            )}
             <div>Linked Package: <span className="font-semibold">{procedure.pmjayPackageName || 'N/A (General)'}</span></div>
             {procedure.pmjayCeilingAmount ? (
               <div>Ceiling Amount: <span className="font-semibold font-mono">{formatRupees(procedure.pmjayCeilingAmount)}</span></div>
@@ -577,7 +584,7 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
         <div className="pt-16 grid grid-cols-3 gap-8 text-[9px] font-sans font-medium text-slate-700">
           <div className="space-y-12">
             <div className="border-t border-slate-500 pt-2 text-center">
-              Cath Lab Scrub Nurse
+              Catheterization Technician (Data Entry)
             </div>
             <div className="text-[9px] text-slate-400 text-center">
               Name: ______________________
@@ -585,7 +592,7 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
           </div>
           <div className="space-y-12">
             <div className="border-t border-slate-500 pt-2 text-center">
-              Primary Operator (Cardiologist)
+              Consultant Cardiologist
             </div>
             <div className="text-[9px] text-slate-400 text-center">
               Name: ______________________
@@ -593,7 +600,7 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
           </div>
           <div className="space-y-12">
             <div className="border-t border-slate-500 pt-2 text-center">
-              Cardiology Head of Department
+              Head of Department, Cardiology
             </div>
             <div className="text-[9px] text-slate-400 text-center">
               Official Stamp & Date

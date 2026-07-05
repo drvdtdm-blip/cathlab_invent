@@ -43,7 +43,8 @@ export interface Procedure {
   timestamp?: number; // epoch ms (added for audit lock check)
   patientRef: string; // "Initials / UHID" format
   procedureType: string;
-  operator: string;
+  operator: string; // Consultant Cardiologist
+  technician?: string; // Catheterization Technician (Data Entry)
   pmjayPackageId?: number;
   pmjayPackageName?: string;
   pmjayCeilingAmount?: number;
