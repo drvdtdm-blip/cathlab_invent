@@ -295,9 +295,9 @@ export const resetDatabase = async () => {
     // 3. Insert PMJAY packages
     const seedPackages: Omit<PmjayPackage, 'id'>[] = [
       {
-        code: "PMJAY-PCI-01",
+        code: "MC011A",
         name: "PCI (Percutaneous Coronary Intervention) Package",
-        ceilingAmount: 45000,
+        ceilingAmount: 62212,
         defaultConsumables: [
           { itemId: getIt("Radifocus Introducer II Sheath"), quantity: 1 }, // 6F 11cm
           { itemId: getIt("Launcher Guide Catheter"), quantity: 1 }, // JL4 6F
@@ -308,9 +308,9 @@ export const resetDatabase = async () => {
         ]
       },
       {
-        code: "PMJAY-PPI-ADDR",
-        name: "PPI (Permanent Pacemaker - Dual Chamber) Package",
-        ceilingAmount: 130000,
+        code: "MC016A",
+        name: "PPI (Permanent Pacemaker - Double Chamber) Package",
+        ceilingAmount: 108000,
         defaultConsumables: [
           { itemId: getIt("Radifocus Introducer II Sheath") + 1, quantity: 1 }, // Terumo 5F 11cm sheath (next item index)
           { itemId: getIt("Adapta Dual Chamber Pacemaker"), quantity: 1 },
@@ -318,9 +318,9 @@ export const resetDatabase = async () => {
         ]
       },
       {
-        code: "PMJAY-BMV-01",
+        code: "MC005A",
         name: "BMV (Balloon Mitral Valvuloplasty) Package",
-        ceilingAmount: 55000,
+        ceilingAmount: 90700,
         defaultConsumables: [
           { itemId: getIt("Radifocus Introducer II Sheath"), quantity: 1 }, // 6F 11cm
           { itemId: getIt("Omnipaque Contrast Media 350mg/ml"), quantity: 1 },
@@ -328,9 +328,9 @@ export const resetDatabase = async () => {
         ]
       },
       {
-        code: "PMJAY-ASD-01",
+        code: "MC007A",
         name: "ASD Device Closure Package",
-        ceilingAmount: 200000,
+        ceilingAmount: 98900,
         defaultConsumables: [
           { itemId: getIt("Radifocus Introducer II Sheath"), quantity: 1 },
           { itemId: getIt("Omnipaque Contrast Media 350mg/ml"), quantity: 1 },
@@ -338,13 +338,23 @@ export const resetDatabase = async () => {
         ]
       },
       {
-        code: "PMJAY-PDA-01",
+        code: "MC009A",
         name: "PDA Device Closure Package",
-        ceilingAmount: 140000,
+        ceilingAmount: 62600,
         defaultConsumables: [
           { itemId: getIt("Radifocus Introducer II Sheath"), quantity: 1 },
           { itemId: getIt("Omnipaque Contrast Media 350mg/ml"), quantity: 1 },
           { itemId: getIt("Amplatzer Duct Occluder"), quantity: 1 }
+        ]
+      },
+      {
+        code: "MC015A",
+        name: "PPI (Permanent Pacemaker - Single Chamber) Package",
+        ceilingAmount: 69500,
+        defaultConsumables: [
+          { itemId: getIt("Radifocus Introducer II Sheath") + 1, quantity: 1 },
+          { itemId: getIt("Assurity MRI Single Chamber Pacemaker"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml"), quantity: 1 }
         ]
       }
     ];
@@ -357,6 +367,7 @@ export const resetDatabase = async () => {
       const match5F = itemsAll.find(i => i.name === "Radifocus Introducer II Sheath" && i.modelSize === "5F 11cm");
       if (match5F && match5F.id) {
         seedPackages[1].defaultConsumables[0].itemId = match5F.id;
+        seedPackages[5].defaultConsumables[0].itemId = match5F.id;
       }
     }
 
