@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type Procedure } from '../db/db';
 import { ProcedurePrintModal } from '../components/ProcedurePrintModal';
 import { 
-  DollarSign, 
+  IndianRupee, 
   AlertTriangle, 
   Calendar, 
   AlertOctagon, 
@@ -97,7 +97,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
           <div className="flex justify-between items-start">
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Stock Valuation</span>
             <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
-              <DollarSign className="w-4 h-4" />
+              <IndianRupee className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-4">

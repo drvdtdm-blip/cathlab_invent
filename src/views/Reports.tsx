@@ -5,7 +5,7 @@ import { exportToCSV } from '../utils/csv';
 import { ProcedurePrintModal } from '../components/ProcedurePrintModal';
 import { 
   BarChart3, 
-  DollarSign, 
+  IndianRupee, 
   Clock, 
   TrendingDown, 
   History, 
@@ -266,7 +266,7 @@ export const Reports: React.FC = () => {
             activeTab === 'valuation' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-505 hover:text-slate-800'
           }`}
         >
-          <DollarSign className="w-4 h-4" /> Stock Valuation
+          <IndianRupee className="w-4 h-4" /> Stock Valuation
         </button>
         <button
           onClick={() => setActiveTab('consumption')}
