@@ -19,11 +19,16 @@ function App() {
   useEffect(() => {
     const checkAndSeed = async () => {
       try {
-        const count = await db.items.count();
-        if (count === 0) {
-          console.log("No inventory items found. Seeding database...");
+        const hasCleanReset = localStorage.getItem('cathlab_clean_reset_v1');
+        if (!hasCleanReset) {
+          console.log("Forcing initial clean database reset...");
           await resetDatabase();
-          console.log("Database seeded successfully!");
+          localStorage.setItem('cathlab_clean_reset_v1', 'true');
+        } else {
+          const count = await db.items.count();
+          if (count === 0) {
+            await resetDatabase();
+          }
         }
       } catch (err) {
         console.error("Error checking or seeding database:", err);
