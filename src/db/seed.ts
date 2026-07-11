@@ -270,6 +270,7 @@ export const resetDatabase = async () => {
     const itemIdsByName: Record<string, number> = {};
 
     for (const item of seedItems) {
+      item.currentQuantity = 0; // Initialize with zero stock balance
       const id = await db.items.add(item as Item);
       itemIdsByName[item.name] = id;
 
@@ -280,11 +281,11 @@ export const resetDatabase = async () => {
         category: item.category,
         timestamp: Date.now(),
         type: 'received',
-        quantityChanged: item.currentQuantity,
-        quantityAfter: item.currentQuantity,
+        quantityChanged: 0,
+        quantityAfter: 0,
         operator: "System Seeding",
         referenceId: "SEED-DATA",
-        reason: "Initial database stock initialization"
+        reason: "Initial database stock catalog initialization (zero balance)"
       };
       await db.ledger.add(ledgerEntry);
     }
