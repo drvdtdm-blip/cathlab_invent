@@ -52,11 +52,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) =
               CL
             </div>
             <div>
-              <h1 className="text-base font-bold tracking-tight text-white m-0 leading-none">Cath Lab</h1>
-              <span className="text-xs text-slate-400 font-medium">Inventory System</span>
+              <h1 className="text-sm font-bold tracking-tight text-white m-0 leading-none uppercase">Cath Lab</h1>
+              <span className="text-[10px] text-slate-400 font-medium block mt-1 leading-tight">Inventory Management System</span>
             </div>
           </div>
-          <div className="mt-2 text-[10px] text-slate-500 uppercase tracking-widest font-semibold">
+          <div className="mt-2.5 text-[9px] text-slate-550 uppercase tracking-widest font-bold">
             SSMC Rewa
           </div>
         </div>

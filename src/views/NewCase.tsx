@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type Item, type Procedure, type PmjayPackage, type LedgerEntry } from '../db/db';
+import { db, type Item, type Procedure, type LedgerEntry } from '../db/db';
 import { 
   FilePlus, 
   Trash2, 
