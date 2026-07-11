@@ -266,13 +266,15 @@ export const resetDatabase = async () => {
     await db.procedures.clear();
     await db.requisitions.clear();
 
-    // 1. Insert items and track their generated IDs
-    const itemIdsByName: Record<string, number> = {};
+    // 1. Insert items and track their generated IDs using Name + Size keys
+    const itemIdsByKey: Record<string, number> = {};
 
     for (const item of seedItems) {
       item.currentQuantity = 0; // Initialize with zero stock balance
       const id = await db.items.add(item as Item);
-      itemIdsByName[item.name] = id;
+      
+      const key = `${item.name}_${item.modelSize}`;
+      itemIdsByKey[key] = id;
 
       // 2. Create the stock ledger audit trail entry for initial seeding
       const ledgerEntry: LedgerEntry = {
@@ -290,8 +292,15 @@ export const resetDatabase = async () => {
       await db.ledger.add(ledgerEntry);
     }
 
-    // Helpers to safely fetch item ID
-    const getIt = (name: string) => itemIdsByName[name] || 0;
+    // Helper to safely fetch item ID by name and size
+    const getIt = (name: string, size: string) => {
+      const key = `${name}_${size}`;
+      const id = itemIdsByKey[key];
+      if (!id) {
+        console.warn(`Seeding warning: Item not found for key: ${key}`);
+      }
+      return id || 0;
+    };
 
     // 3. Insert PMJAY packages
     const seedPackages: Omit<PmjayPackage, 'id'>[] = [
@@ -300,12 +309,12 @@ export const resetDatabase = async () => {
         name: "PCI (Percutaneous Coronary Intervention) Package",
         ceilingAmount: 62212,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath"), quantity: 1 }, // 6F 11cm
-          { itemId: getIt("Launcher Guide Catheter"), quantity: 1 }, // JL4 6F
-          { itemId: getIt("Runthrough NS Coronary Guidewire"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml"), quantity: 1 },
-          { itemId: getIt("Coronary Y-Connector Kit"), quantity: 1 },
-          { itemId: getIt("XIENCE Sierra Everolimus-Eluting Stent"), quantity: 1 }
+          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
+          { itemId: getIt("Launcher Guide Catheter", "JL4 6F"), quantity: 1 },
+          { itemId: getIt("Runthrough NS Coronary Guidewire", "0.014in x 180cm"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
+          { itemId: getIt("Coronary Y-Connector Kit", "Push-Click Type"), quantity: 1 },
+          { itemId: getIt("XIENCE Sierra Everolimus-Eluting Stent", "3.00mm x 18mm"), quantity: 1 }
         ]
       },
       {
@@ -313,9 +322,9 @@ export const resetDatabase = async () => {
         name: "PPI (Permanent Pacemaker - Double Chamber) Package",
         ceilingAmount: 108000,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath") + 1, quantity: 1 }, // Terumo 5F 11cm sheath (next item index)
-          { itemId: getIt("Adapta Dual Chamber Pacemaker"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml"), quantity: 1 }
+          { itemId: getIt("Radifocus Introducer II Sheath", "5F 11cm"), quantity: 1 },
+          { itemId: getIt("Adapta Dual Chamber Pacemaker", "ADDR01 (Dual Chamber)"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 }
         ]
       },
       {
@@ -323,9 +332,9 @@ export const resetDatabase = async () => {
         name: "BMV (Balloon Mitral Valvuloplasty) Package",
         ceilingAmount: 90700,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath"), quantity: 1 }, // 6F 11cm
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml"), quantity: 1 },
-          { itemId: getIt("Inoue BMV Balloon"), quantity: 1 }
+          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
+          { itemId: getIt("Inoue BMV Balloon", "26mm"), quantity: 1 }
         ]
       },
       {
@@ -333,9 +342,9 @@ export const resetDatabase = async () => {
         name: "ASD Device Closure Package",
         ceilingAmount: 98900,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml"), quantity: 1 },
-          { itemId: getIt("Amplatzer Septal Occluder"), quantity: 1 }
+          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
+          { itemId: getIt("Amplatzer Septal Occluder", "ASD 24mm"), quantity: 1 }
         ]
       },
       {
@@ -343,9 +352,9 @@ export const resetDatabase = async () => {
         name: "PDA Device Closure Package",
         ceilingAmount: 62600,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml"), quantity: 1 },
-          { itemId: getIt("Amplatzer Duct Occluder"), quantity: 1 }
+          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
+          { itemId: getIt("Amplatzer Duct Occluder", "PDA 8/6"), quantity: 1 }
         ]
       },
       {
@@ -353,24 +362,12 @@ export const resetDatabase = async () => {
         name: "PPI (Permanent Pacemaker - Single Chamber) Package",
         ceilingAmount: 69500,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath") + 1, quantity: 1 },
-          { itemId: getIt("Assurity MRI Single Chamber Pacemaker"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml"), quantity: 1 }
+          { itemId: getIt("Radifocus Introducer II Sheath", "5F 11cm"), quantity: 1 },
+          { itemId: getIt("Assurity MRI Single Chamber Pacemaker", "PM1272 (Single Chamber)"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 }
         ]
       }
     ];
-
-    // Fix up Terumo 5F sheath index manually to ensure accuracy
-    const sheath5F = seedItems.find(i => i.name === "Radifocus Introducer II Sheath" && i.modelSize === "5F 11cm");
-    if (sheath5F) {
-      // Find exact ID of 5F
-      const itemsAll = await db.items.toArray();
-      const match5F = itemsAll.find(i => i.name === "Radifocus Introducer II Sheath" && i.modelSize === "5F 11cm");
-      if (match5F && match5F.id) {
-        seedPackages[1].defaultConsumables[0].itemId = match5F.id;
-        seedPackages[5].defaultConsumables[0].itemId = match5F.id;
-      }
-    }
 
     for (const pkg of seedPackages) {
       await db.pmjayPackages.add(pkg as PmjayPackage);
