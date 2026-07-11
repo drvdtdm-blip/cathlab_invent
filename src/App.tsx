@@ -6,11 +6,12 @@ import { NewCase } from './views/NewCase';
 import { Requisitions } from './views/Requisitions';
 import { Reports } from './views/Reports';
 import { Settings } from './views/Settings';
+import { LandingPage } from './views/LandingPage';
 import { db } from './db/db';
 import { resetDatabase } from './db/seed';
 
 function App() {
-  const [currentView, setCurrentView] = useState<string>('dashboard');
+  const [currentView, setCurrentView] = useState<string>('landing');
   const [dbInitialized, setDbInitialized] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0); // to force reload views when db resets
 
@@ -64,6 +65,10 @@ function App() {
         <p className="mt-4 text-sm font-semibold tracking-wide text-slate-400">Initializing Database Schema...</p>
       </div>
     );
+  }
+
+  if (currentView === 'landing') {
+    return <LandingPage onEnter={() => setCurrentView('dashboard')} />;
   }
 
   return (
