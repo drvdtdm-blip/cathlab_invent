@@ -104,13 +104,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) =
       </div>
 
       {/* Footer Info */}
-      <div className="p-4 border-t border-slate-800 bg-slate-950/40">
+      <div className="p-4 border-t border-slate-800 bg-slate-950/40 space-y-2.5">
         <div className="flex items-center gap-3 text-xs text-slate-400">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
           <div>
             <p className="font-semibold text-slate-300">IndexedDB Storage</p>
-            <p className="text-[10px] text-slate-500">Offline-first Mode Active</p>
+            <p className="text-[10px] text-slate-550">Offline-first Mode Active</p>
           </div>
+        </div>
+        <div className="pt-2 border-t border-slate-800/80 text-[10px] text-slate-450 font-bold tracking-wider uppercase text-center">
+          Designed by Dr V D Tripathi DM
         </div>
       </div>
     </aside>

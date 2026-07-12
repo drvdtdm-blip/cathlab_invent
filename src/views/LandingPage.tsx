@@ -161,6 +161,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onEnter }) => {
         <p className="text-[9px] text-slate-600 font-mono">
           Authorized access only. Technical & consumable log ledger traces enabled.
         </p>
+        <p className="text-[10px] text-slate-450 font-bold tracking-widest uppercase pt-2">
+          Designed by Dr V D Tripathi DM
+        </p>
       </div>
 
     </div>
