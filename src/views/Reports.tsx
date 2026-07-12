@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db, type Procedure } from '../db/db';
-import { exportToCSV } from '../utils/csv';
+import { exportToExcel } from '../utils/excel';
 import { ProcedurePrintModal } from '../components/ProcedurePrintModal';
 import { 
   BarChart3, 
@@ -76,7 +76,7 @@ export const Reports: React.FC = () => {
       { key: 'unitCost', label: 'Unit Cost' },
       { key: 'totalValuation', label: 'Total Valuation' },
     ];
-    exportToCSV(valuationData as any[], headers as any[], 'stock_valuation');
+    exportToExcel(valuationData as any[], headers as any[], 'stock_valuation');
   };
 
   // ==================== 2. Consumption Calculations ====================
@@ -107,7 +107,7 @@ export const Reports: React.FC = () => {
       { key: 'cases', label: 'Total Cases' },
       { key: 'totalCost', label: 'Total Consumable Cost' }
     ];
-    exportToCSV(consumptionData, headers, `consumption_by_${consumptionGroup}`);
+    exportToExcel(consumptionData, headers, `consumption_by_${consumptionGroup}`);
   };
 
   // ==================== 3. Expiry Calculations ====================
@@ -142,7 +142,7 @@ export const Reports: React.FC = () => {
       { key: 'daysToExpiry', label: 'Days Remaining' },
       { key: 'currentQuantity', label: 'Stock Qty' }
     ];
-    exportToCSV(expiryData, headers, 'expiring_expired_stock');
+    exportToExcel(expiryData, headers, 'expiring_expired_stock');
   };
 
   // ==================== 4. PMJAY Variance Calculations ====================
@@ -194,7 +194,7 @@ export const Reports: React.FC = () => {
       { key: 'avgCost', label: 'Average Cost' },
       { key: 'variance', label: 'Variance (Ceiling - Avg)' }
     ];
-    exportToCSV(varianceSummaries, headers, 'pmjay_package_variance');
+    exportToExcel(varianceSummaries, headers, 'pmjay_package_variance');
   };
 
   const handleExportOverCeiling = () => {
@@ -210,7 +210,7 @@ export const Reports: React.FC = () => {
       { key: 'variance', label: 'Excess Amount' },
       { key: 'reason', label: 'Justification Reason' }
     ];
-    exportToCSV(overCeilingCases, headers, 'over_ceiling_procedures');
+    exportToExcel(overCeilingCases, headers, 'over_ceiling_procedures');
   };
 
   const handleExportMonthlyClaims = () => {
@@ -256,7 +256,7 @@ export const Reports: React.FC = () => {
       { key: 'Consumed Items Details', label: 'Consumed Items Details' }
     ];
 
-    exportToCSV(exportData, headers, `PMJAY_Claims_Report_${exportMonth}`);
+    exportToExcel(exportData, headers, `PMJAY_Claims_Report_${exportMonth}`);
   };
 
   // ==================== 5. Audit Ledger Calculations ====================
@@ -291,7 +291,7 @@ export const Reports: React.FC = () => {
       timestamp: new Date(log.timestamp).toLocaleString('en-IN')
     }));
 
-    exportToCSV(formattedData, headers, `stock_ledger_audit_log`);
+    exportToExcel(formattedData, headers, `stock_ledger_audit_log`);
   };
 
   // ==================== 6. Procedures Registry Calculations ====================
@@ -338,7 +338,7 @@ export const Reports: React.FC = () => {
       justification: proc.overCeilingReason || '—'
     }));
 
-    exportToCSV(data, headers, `procedures_registry_export`);
+    exportToExcel(data, headers, `procedures_registry_export`);
   };
 
   return (
@@ -421,7 +421,7 @@ export const Reports: React.FC = () => {
               onClick={handleExportValuation}
               className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 py-1.5 px-3 rounded border border-blue-150"
             >
-              <Download className="w-3.5 h-3.5" /> Export CSV
+              <Download className="w-3.5 h-3.5" /> Export Excel
             </button>
           </div>
 
@@ -515,7 +515,7 @@ export const Reports: React.FC = () => {
               onClick={handleExportConsumption}
               className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 py-1.5 px-3 rounded border border-blue-150"
             >
-              <Download className="w-3.5 h-3.5" /> Export CSV
+              <Download className="w-3.5 h-3.5" /> Export Excel
             </button>
           </div>
 
@@ -586,7 +586,7 @@ export const Reports: React.FC = () => {
               onClick={handleExportExpiry}
               className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 py-1.5 px-3 rounded border border-blue-150"
             >
-              <Download className="w-3.5 h-3.5" /> Export CSV
+              <Download className="w-3.5 h-3.5" /> Export Excel
             </button>
           </div>
 
@@ -681,14 +681,14 @@ export const Reports: React.FC = () => {
       {activeTab === 'variance' && (
         <div className="space-y-6 print-only-container text-left">
           
-          {/* Monthly Claims CSV Export Panel */}
+          {/* Monthly Claims Excel Export Panel */}
           <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4 no-print">
             <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider m-0 flex items-center gap-1.5">
               <Download className="w-4 h-4 text-blue-500" />
               Monthly Claims Audit Export Desk
             </h4>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Export all logged procedure consumable files for a specific month as a formatted CSV claims registry spreadsheet to submit directly to State Health Authorities for PMJAY claims reimbursement auditing.
+              Export all logged procedure consumable files for a specific month as a formatted Excel claims registry spreadsheet to submit directly to State Health Authorities for PMJAY claims reimbursement auditing.
             </p>
             <div className="flex flex-col sm:flex-row items-end gap-3 max-w-md">
               <div className="flex-1 w-full">
@@ -707,7 +707,7 @@ export const Reports: React.FC = () => {
                 onClick={handleExportMonthlyClaims}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-xs flex items-center gap-1.5 w-full sm:w-auto shadow-sm shadow-blue-500/10 cursor-pointer"
               >
-                <Download className="w-3.5 h-3.5" /> Export Claims CSV
+                <Download className="w-3.5 h-3.5" /> Export Claims Excel
               </button>
             </div>
           </div>
@@ -720,7 +720,7 @@ export const Reports: React.FC = () => {
                 onClick={handleExportVariance}
                 className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 py-1.5 px-3 rounded border border-blue-150"
               >
-                <Download className="w-3.5 h-3.5" /> Export Variance CSV
+                <Download className="w-3.5 h-3.5" /> Export Excel
               </button>
             </div>
 
@@ -777,7 +777,7 @@ export const Reports: React.FC = () => {
                 onClick={handleExportOverCeiling}
                 className="flex items-center gap-1.5 text-xs font-bold text-rose-700 hover:text-rose-900 bg-rose-50 py-1.5 px-3 rounded border border-rose-150"
               >
-                <Download className="w-3.5 h-3.5" /> Export Over-Ceiling CSV
+                <Download className="w-3.5 h-3.5" /> Export Over-Ceiling Excel
               </button>
             </div>
 
@@ -884,9 +884,9 @@ export const Reports: React.FC = () => {
             <div className="flex gap-2 justify-end">
               <button
                 onClick={handleExportLedger}
-                className="flex items-center justify-center gap-1.5 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg text-xs shadow-xs"
+                className="flex items-center justify-center gap-1.5 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded-lg text-xs shadow-xs cursor-pointer"
               >
-                <Download className="w-3.5 h-3.5" /> Export Ledger CSV
+                <Download className="w-3.5 h-3.5" /> Export Ledger Excel
               </button>
             </div>
           </div>
@@ -1013,7 +1013,7 @@ export const Reports: React.FC = () => {
               onClick={handleExportProceduresRegistry}
               className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 py-2 px-4 rounded-lg border border-blue-150 shadow-2xs cursor-pointer"
             >
-              <Download className="w-3.5 h-3.5" /> Export Registry CSV
+              <Download className="w-3.5 h-3.5" /> Export Registry Excel
             </button>
           </div>
 
