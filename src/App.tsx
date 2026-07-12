@@ -19,6 +19,13 @@ function App() {
   useEffect(() => {
     const checkAndSeed = async () => {
       try {
+        // Preinstall cardiologist list if empty or not set
+        const currentConsultants = localStorage.getItem('cathlab_consultants');
+        if (!currentConsultants || currentConsultants === '[]') {
+          const defaultDocs = ["Dr. V. D. Tripathi", "Dr. S. K. Tripathi", "Dr. A. Shukla", "Dr. S. K. Tiwari"];
+          localStorage.setItem('cathlab_consultants', JSON.stringify(defaultDocs));
+        }
+
         const hasCleanReset = localStorage.getItem('cathlab_clean_reset_v1');
         if (!hasCleanReset) {
           console.log("Forcing initial clean database reset...");
