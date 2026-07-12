@@ -38,7 +38,7 @@ export const Reports: React.FC = () => {
   const [ledgerTypeFilter, setLedgerTypeFilter] = useState('');
 
   // Consumption Grouping state
-  const [consumptionGroup, setConsumptionGroup] = useState<'procedureType' | 'operator' | 'month'>('procedureType');
+  const [consumptionGroup, setConsumptionGroup] = useState<'procedureType' | 'operator' | 'date' | 'month'>('procedureType');
 
   // Format currency
   const formatRupees = (amount: number) => {
@@ -87,6 +87,7 @@ export const Reports: React.FC = () => {
       let groupKey = '';
       if (consumptionGroup === 'procedureType') groupKey = proc.procedureType;
       else if (consumptionGroup === 'operator') groupKey = proc.operator;
+      else if (consumptionGroup === 'date') groupKey = proc.date; // YYYY-MM-DD
       else if (consumptionGroup === 'month') groupKey = proc.date.substring(0, 7); // YYYY-MM
 
       if (!groups[groupKey]) {
@@ -103,7 +104,11 @@ export const Reports: React.FC = () => {
 
   const handleExportConsumption = () => {
     const headers = [
-      { key: 'key', label: consumptionGroup === 'procedureType' ? 'Procedure Type' : consumptionGroup === 'operator' ? 'Operator' : 'Month' },
+      { key: 'key', label: 
+        consumptionGroup === 'procedureType' ? 'Procedure Type' : 
+        consumptionGroup === 'operator' ? 'Operator' : 
+        consumptionGroup === 'date' ? 'Date' : 'Month' 
+      },
       { key: 'cases', label: 'Total Cases' },
       { key: 'totalCost', label: 'Total Consumable Cost' }
     ];
@@ -495,7 +500,7 @@ export const Reports: React.FC = () => {
             <div className="flex items-center gap-4">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Group By:</span>
               <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-205">
-                {(['procedureType', 'operator', 'month'] as const).map(option => (
+                {(['procedureType', 'operator', 'date', 'month'] as const).map(option => (
                   <button
                     key={option}
                     onClick={() => setConsumptionGroup(option)}
@@ -505,7 +510,9 @@ export const Reports: React.FC = () => {
                         : 'text-slate-500 hover:text-slate-850'
                     }`}
                   >
-                    {option === 'procedureType' ? 'Procedure' : option === 'operator' ? 'Operator' : 'Month'}
+                    {option === 'procedureType' ? 'Procedure' : 
+                     option === 'operator' ? 'Operator' : 
+                     option === 'date' ? 'Date' : 'Month'}
                   </button>
                 ))}
               </div>
@@ -532,7 +539,9 @@ export const Reports: React.FC = () => {
               <thead>
                 <tr className="border-b border-slate-200 text-slate-500 font-bold bg-slate-50 uppercase tracking-wider">
                   <th className="py-2.5 px-4">
-                    {consumptionGroup === 'procedureType' ? 'Procedure Type' : consumptionGroup === 'operator' ? 'Operator Name' : 'Calendar Month'}
+                    {consumptionGroup === 'procedureType' ? 'Procedure Type' : 
+                     consumptionGroup === 'operator' ? 'Operator Name' : 
+                     consumptionGroup === 'date' ? 'Procedure Date' : 'Calendar Month'}
                   </th>
                   <th className="py-2.5 px-4 text-center">Cases Count</th>
                   <th className="py-2.5 px-4 text-right">Total Consumables Cost</th>
