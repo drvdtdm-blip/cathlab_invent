@@ -237,6 +237,7 @@ export const Reports: React.FC = () => {
         'Procedure Type': p.procedureType,
         'Consultant Cardiologist': p.operator,
         'Technician (Data Entry)': p.technician || '—',
+        'Cath Lab Room': p.cathLab || 'Cathlab 1',
         'Linked PMJAY Package': p.pmjayPackageName || 'Non-Ayushman (General)',
         'Ceiling Limit (INR)': p.pmjayCeilingAmount || 0,
         'Actual Consumables Cost (INR)': p.totalCost,
@@ -253,6 +254,7 @@ export const Reports: React.FC = () => {
       { key: 'Procedure Type', label: 'Procedure Type' },
       { key: 'Consultant Cardiologist', label: 'Consultant Cardiologist' },
       { key: 'Technician (Data Entry)', label: 'Technician (Data Entry)' },
+      { key: 'Cath Lab Room', label: 'Cath Lab Room' },
       { key: 'Linked PMJAY Package', label: 'Linked PMJAY Package' },
       { key: 'Ceiling Limit (INR)', label: 'Ceiling Limit (INR)' },
       { key: 'Actual Consumables Cost (INR)', label: 'Actual Consumables Cost (INR)' },
@@ -322,6 +324,7 @@ export const Reports: React.FC = () => {
       { key: 'procedureType', label: 'Procedure Type' },
       { key: 'operator', label: 'Consultant Cardiologist' },
       { key: 'technician', label: 'Cath Lab Technician' },
+      { key: 'cathLab', label: 'Cath Lab Room' },
       { key: 'packageName', label: 'PMJAY Package' },
       { key: 'ceiling', label: 'Ceiling' },
       { key: 'totalCost', label: 'Total Cost' },
@@ -336,6 +339,7 @@ export const Reports: React.FC = () => {
       procedureType: proc.procedureType,
       operator: proc.operator,
       technician: proc.technician || '—',
+      cathLab: proc.cathLab || 'Cathlab 1',
       packageName: proc.pmjayPackageName || 'Non-Ayushman (General)',
       ceiling: proc.pmjayCeilingAmount || 0,
       totalCost: proc.totalCost,
@@ -1042,6 +1046,7 @@ export const Reports: React.FC = () => {
                   <th className="py-2.5 px-4">Patient Reference</th>
                   <th className="py-2.5 px-4">Procedure Type</th>
                   <th className="py-2.5 px-4">Consultant Cardiologist</th>
+                  <th className="py-2.5 px-4">Cath Lab</th>
                   <th className="py-2.5 px-4 text-right">Consumables Amount</th>
                   <th className="py-2.5 px-4 text-center">Status</th>
                 </tr>
@@ -1049,7 +1054,7 @@ export const Reports: React.FC = () => {
               <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
                 {filteredCases.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="text-center py-8 text-slate-400 italic">No cases found matching filters.</td>
+                    <td colSpan={8} className="text-center py-8 text-slate-400 italic">No cases found matching filters.</td>
                   </tr>
                 ) : (
                   filteredCases.map((proc) => (
@@ -1059,6 +1064,7 @@ export const Reports: React.FC = () => {
                       <td className="py-3 px-4 font-mono">{proc.patientRef}</td>
                       <td className="py-3 px-4">{proc.procedureType}</td>
                       <td className="py-3 px-4 text-slate-700">{proc.operator}</td>
+                      <td className="py-3 px-4 text-slate-650 font-semibold">{proc.cathLab || 'Cathlab 1'}</td>
                       <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">{formatRupees(proc.totalCost)}</td>
                       <td className="py-3 px-4 text-center">
                         {proc.overCeiling ? (

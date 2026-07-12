@@ -38,6 +38,7 @@ export const NewCase: React.FC<NewCaseProps> = ({ onSuccess }) => {
   const [operator, setOperator] = useState(''); // Consultant Cardiologist
   const [technician, setTechnician] = useState(''); // Catheterization Technician (Data Entry)
   const [procedureType, setProcedureType] = useState('PCI');
+  const [cathLab, setCathLab] = useState<'Cathlab 1' | 'Cathlab 2'>('Cathlab 1');
   const [selectedPackageId, setSelectedPackageId] = useState<number | undefined>(undefined);
   const [overCeilingReason, setOverCeilingReason] = useState('');
 
@@ -318,6 +319,7 @@ export const NewCase: React.FC<NewCaseProps> = ({ onSuccess }) => {
           procedureType,
           operator, // Consultant Cardiologist
           technician, // Catheterization Technician (Data Entry)
+          cathLab,
           pmjayPackageId: selectedPackageId,
           pmjayPackageName: selectedPackage?.name,
           pmjayCeilingAmount: ceilingAmount,
@@ -389,7 +391,7 @@ export const NewCase: React.FC<NewCaseProps> = ({ onSuccess }) => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">Procedure Date *</label>
                   <input
@@ -414,6 +416,18 @@ export const NewCase: React.FC<NewCaseProps> = ({ onSuccess }) => {
                     <option value="BMV">BMV (Mitral Balloon)</option>
                     <option value="ASD">ASD (Device Closure)</option>
                     <option value="PDA">PDA (Device Closure)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Cath Lab Room *</label>
+                  <select
+                    value={cathLab}
+                    onChange={(e) => setCathLab(e.target.value as any)}
+                    className="w-full p-2 border border-slate-200 rounded-lg text-sm font-medium"
+                  >
+                    <option value="Cathlab 1">Cathlab 1</option>
+                    <option value="Cathlab 2">Cathlab 2</option>
                   </select>
                 </div>
               </div>

@@ -291,6 +291,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
                     <th className="py-2.5 px-3">Case ID</th>
                     <th className="py-2.5 px-3">Patient Ref</th>
                     <th className="py-2.5 px-3">Type</th>
+                    <th className="py-2.5 px-3">Cath Lab</th>
                     <th className="py-2.5 px-3">Operator</th>
                     <th className="py-2.5 px-3 text-right">Cost</th>
                     <th className="py-2.5 px-3 text-center">Status</th>
@@ -303,6 +304,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
                       <td className="py-2.5 px-3 text-slate-900 font-semibold">{proc.caseId}</td>
                       <td className="py-2.5 px-3 text-slate-700">{proc.patientRef}</td>
                       <td className="py-2.5 px-3 text-slate-800">{proc.procedureType}</td>
+                      <td className="py-2.5 px-3 text-slate-650 font-semibold">{proc.cathLab || 'Cathlab 1'}</td>
                       <td className="py-2.5 px-3 text-slate-600">{proc.operator}</td>
                       <td className="py-2.5 px-3 text-right text-slate-900 font-mono font-semibold">
                         {formatRupees(proc.totalCost)}

@@ -297,6 +297,7 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
               {procedure.technician && (
                 <p className="text-slate-700 mt-1">Technician: {procedure.technician}</p>
               )}
+              <p className="text-slate-700 mt-1">Cath Lab: {procedure.cathLab || 'Cathlab 1'}</p>
             </div>
             <div>
               <p className="text-slate-450 font-bold uppercase tracking-wider text-[9px]">Patient & Billing</p>
@@ -547,6 +548,7 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
             {procedure.technician && (
               <div>Cath Lab Technician: <span className="font-semibold">{procedure.technician}</span></div>
             )}
+            <div>Cath Lab Room: <span className="font-semibold">{procedure.cathLab || 'Cathlab 1'}</span></div>
             <div>Billing Category: <span className="font-semibold">{procedure.pmjayPackageName || 'Non-Ayushman (General Billing)'}</span></div>
             {procedure.pmjayCeilingAmount ? (
               <div>Ceiling Amount: <span className="font-semibold font-mono">{formatRupees(procedure.pmjayCeilingAmount)}</span></div>

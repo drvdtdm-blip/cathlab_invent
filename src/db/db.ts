@@ -45,6 +45,7 @@ export interface Procedure {
   procedureType: string;
   operator: string; // Consultant Cardiologist
   technician?: string; // Catheterization Technician (Data Entry)
+  cathLab?: string; // Which theater (Cathlab 1 or Cathlab 2)
   pmjayPackageId?: number;
   pmjayPackageName?: string;
   pmjayCeilingAmount?: number;
