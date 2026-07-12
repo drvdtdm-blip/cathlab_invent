@@ -113,8 +113,8 @@ export const Inventory: React.FC = () => {
   // Handle Add Item
   const handleAddItem = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newItem.name || !newItem.batchLotNo || !newItem.expiryDate || !newItem.operator) {
-      alert("Please fill in all required fields, including the Operator name.");
+    if (!newItem.name || !newItem.batchLotNo || !newItem.expiryDate) {
+      alert("Please fill in all required fields.");
       return;
     }
 
@@ -144,7 +144,7 @@ export const Inventory: React.FC = () => {
           type: 'received',
           quantityChanged: addedItem.currentQuantity,
           quantityAfter: addedItem.currentQuantity,
-          operator: newItem.operator,
+          operator: 'Cath Lab Store In-charge',
           referenceId: 'INITIAL-STOCK',
           reason: 'Initial item catalog addition'
         };
@@ -578,35 +578,21 @@ export const Inventory: React.FC = () => {
                 </div>
               </div>
 
-              {/* Auditor Field */}
-              <div className="pt-3 border-t border-slate-100 bg-slate-50/50 -mx-5 -mb-5 p-5 rounded-b-xl space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Operator Name (Audit Mandate) *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Enter your name / initials"
-                    value={newItem.operator}
-                    onChange={(e) => setNewItem({ ...newItem, operator: e.target.value })}
-                    className="w-full p-2 border border-blue-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-lg text-sm bg-white font-medium"
-                  />
-                </div>
-
-                <div className="flex justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setIsAddModalOpen(false)}
-                    className="px-4 py-2 border border-slate-250 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 text-xs"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-sm text-xs"
-                  >
-                    Save Catalog Item
-                  </button>
-                </div>
+              {/* Modal Footer Controls */}
+              <div className="pt-3 border-t border-slate-100 bg-slate-50/50 -mx-5 -mb-5 p-5 rounded-b-xl flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(false)}
+                  className="px-4 py-2 border border-slate-250 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 text-xs"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg text-xs shadow-sm shadow-blue-500/10"
+                >
+                  Save Item
+                </button>
               </div>
 
             </form>
