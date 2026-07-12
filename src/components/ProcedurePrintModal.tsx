@@ -423,11 +423,33 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
                     </tr>
                   ))
                 )}
-                <tr className="bg-slate-50 font-bold border-t border-slate-200">
-                  <td colSpan={4} className="py-2.5 px-3 text-right uppercase tracking-wider text-[10px]">Total Consumables Cost</td>
-                  <td className="py-2.5 px-3 text-right font-mono text-slate-900">{formatRupees(activeCost)}</td>
-                  {isEditing && <td></td>}
-                </tr>
+                 <tr className="bg-slate-50 border-t border-slate-200 text-[10px]">
+                   <td colSpan={4} className="py-2 px-3 text-right font-bold text-slate-500 uppercase">Approved Package Amount:</td>
+                   <td className="py-2 px-3 text-right font-mono font-bold text-slate-800">
+                     {procedure.pmjayCeilingAmount ? formatRupees(procedure.pmjayCeilingAmount) : 'N/A (General)'}
+                   </td>
+                   {isEditing && <td></td>}
+                 </tr>
+                 <tr className="bg-slate-50 border-t border-slate-100 text-[10px]">
+                   <td colSpan={4} className="py-2 px-3 text-right font-bold text-slate-500 uppercase">Consumables Amount Used:</td>
+                   <td className="py-2 px-3 text-right font-mono font-bold text-slate-900">
+                     {formatRupees(activeCost)}
+                   </td>
+                   {isEditing && <td></td>}
+                 </tr>
+                 <tr className="bg-slate-100 border-t border-slate-200 text-[10px] font-bold">
+                   <td colSpan={4} className="py-2.5 px-3 text-right uppercase tracking-wider">
+                     {procedure.pmjayCeilingAmount && (activeCost > procedure.pmjayCeilingAmount) ? 'Budget Deficit / Excess Cost:' : 'Unused Balance / Savings:'}
+                   </td>
+                   <td className={`py-2.5 px-3 text-right font-mono text-xs ${
+                     procedure.pmjayCeilingAmount && (activeCost > procedure.pmjayCeilingAmount) ? 'text-rose-700' : 'text-emerald-700'
+                   }`}>
+                     {procedure.pmjayCeilingAmount 
+                       ? formatRupees(Math.abs(procedure.pmjayCeilingAmount - activeCost))
+                       : '—'}
+                   </td>
+                   {isEditing && <td></td>}
+                 </tr>
               </tbody>
             </table>
           </div>
@@ -561,10 +583,30 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
                   <td className="py-2 px-2 text-right font-mono font-bold text-slate-900">{formatRupees(item.quantity * item.unitCost)}</td>
                 </tr>
               ))}
-              <tr className="border-t border-slate-800 font-bold bg-slate-50 font-mono text-slate-900 text-xs">
-                <td colSpan={6} className="py-2.5 px-2 text-right uppercase tracking-wider text-[9px]">Grand Total Consumables Cost</td>
-                <td className="py-2.5 px-2 text-right">{formatRupees(procedure.totalCost)}</td>
-              </tr>
+               <tr className="border-t border-slate-800 text-[10px] font-medium bg-slate-50">
+                 <td colSpan={6} className="py-2 px-2 text-right uppercase tracking-wider text-[8px] font-bold text-slate-600">Approved Package Amount:</td>
+                 <td className="py-2 px-2 text-right font-mono font-bold">
+                   {procedure.pmjayCeilingAmount ? formatRupees(procedure.pmjayCeilingAmount) : 'N/A (General)'}
+                 </td>
+               </tr>
+               <tr className="border-t border-slate-200 text-[10px] font-medium bg-slate-50">
+                 <td colSpan={6} className="py-2 px-2 text-right uppercase tracking-wider text-[8px] font-bold text-slate-600">Consumables Amount Used:</td>
+                 <td className="py-2 px-2 text-right font-mono font-bold">
+                   {formatRupees(procedure.totalCost)}
+                 </td>
+               </tr>
+               <tr className="border-t border-slate-800 font-bold bg-slate-100 text-xs">
+                 <td colSpan={6} className="py-2.5 px-2 text-right uppercase tracking-wider text-[8px] font-bold">
+                   {procedure.overCeiling ? 'Budget Deficit / Excess Cost:' : 'Unused Balance / Savings:'}
+                 </td>
+                 <td className={`py-2.5 px-2 text-right font-mono ${
+                   procedure.overCeiling ? 'text-rose-700 font-black' : 'text-emerald-700 font-black'
+                 }`}>
+                   {procedure.pmjayCeilingAmount 
+                     ? formatRupees(Math.abs(procedure.pmjayCeilingAmount - procedure.totalCost))
+                     : '—'}
+                 </td>
+               </tr>
             </tbody>
           </table>
         </div>
