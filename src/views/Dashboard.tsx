@@ -19,6 +19,15 @@ interface DashboardProps {
 
 export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
   const [activeProcedure, setActiveProcedure] = useState<Procedure | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState('');
+  const [rememberedDoctors, setRememberedDoctors] = useState<string[]>([]);
+
+  // Load remembered doctors from local memory on mount
+  React.useEffect(() => {
+    const docs = JSON.parse(localStorage.getItem('cathlab_consultants') || '[]');
+    setRememberedDoctors(docs);
+  }, []);
+
   // Live query for metrics
   const metrics = useLiveQuery(async () => {
     const items = await db.items.toArray();
@@ -46,10 +55,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
     // 5. Over-ceiling cases this month
     const overCeilingCount = casesThisMonth.filter(p => p.overCeiling).length;
 
-    // 6. Recent procedures (last 5)
-    const recentProcedures = procedures
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime() || (b.id || 0) - (a.id || 0))
-      .slice(0, 5);
+    // 6. Procedures
+    const allProcs = procedures.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime() || (b.id || 0) - (a.id || 0));
 
     return {
       totalStockValue,
@@ -57,7 +64,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
       expiringSoon,
       casesCount,
       overCeilingCount,
-      recentProcedures
+      procedures: allProcs
     };
   }, []) || {
     totalStockValue: 0,
@@ -65,8 +72,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
     expiringSoon: 0,
     casesCount: 0,
     overCeilingCount: 0,
-    recentProcedures: []
+    procedures: []
   };
+
+  // Filter display list doctor wise
+  const displayProcedures = selectedDoctor 
+    ? metrics.procedures.filter(p => p.operator === selectedDoctor)
+    : metrics.procedures.slice(0, 5);
 
   // Format currency in Indian Rupees style (Lakh / Crore spacing is ideal, or standard)
   const formatRupees = (amount: number) => {
@@ -236,23 +248,40 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
 
         {/* Recent Cases */}
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-2">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
             <h2 className="text-sm font-bold text-slate-700 tracking-tight m-0 flex items-center gap-2">
               <Activity className="w-4 h-4 text-slate-500" />
-              Recent Procedures Logged
+              {selectedDoctor ? `${selectedDoctor}'s Cases` : 'Recent Procedures Logged'}
             </h2>
-            <button 
-              onClick={() => onViewChange('reports')}
-              className="text-xs text-blue-600 hover:text-blue-700 font-semibold"
-            >
-              View Full Logs →
-            </button>
+            
+            <div className="flex items-center gap-3 no-print">
+              <div className="flex items-center gap-1.5">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Doctor:</label>
+                <select
+                  value={selectedDoctor}
+                  onChange={(e) => setSelectedDoctor(e.target.value)}
+                  className="p-1 border border-slate-200 rounded-lg text-xs bg-slate-50 font-medium cursor-pointer"
+                >
+                  <option value="">All Doctors</option>
+                  {rememberedDoctors.map(doc => (
+                    <option key={doc} value={doc}>{doc}</option>
+                  ))}
+                </select>
+              </div>
+
+              <button 
+                onClick={() => onViewChange('reports')}
+                className="text-xs text-blue-600 hover:text-blue-700 font-semibold"
+              >
+                View Full Logs →
+              </button>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
-            {metrics.recentProcedures.length === 0 ? (
+            {displayProcedures.length === 0 ? (
               <div className="text-center py-8 text-slate-400 text-sm">
-                No recent cases logged. Click "Log New Case" to get started.
+                No cases found under this filter.
               </div>
             ) : (
               <table className="w-full text-left text-xs border-collapse">
@@ -268,7 +297,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 font-medium">
-                  {metrics.recentProcedures.map((proc) => (
+                  {displayProcedures.map((proc) => (
                     <tr key={proc.id} className="hover:bg-slate-50/50 cursor-pointer" onClick={() => setActiveProcedure(proc)}>
                       <td className="py-2.5 px-3 text-slate-500">{proc.date}</td>
                       <td className="py-2.5 px-3 text-slate-900 font-semibold">{proc.caseId}</td>
