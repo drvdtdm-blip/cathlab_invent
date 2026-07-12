@@ -11,7 +11,9 @@ import {
   History, 
   Download, 
   Printer, 
-  AlertTriangle
+  AlertTriangle,
+  Activity,
+  Search
 } from 'lucide-react';
 
 export const Reports: React.FC = () => {
@@ -24,11 +26,15 @@ export const Reports: React.FC = () => {
   const pmjayPackages = useLiveQuery(() => db.pmjayPackages.toArray(), []) || [];
 
   // Active Report Tab
-  const [activeTab, setActiveTab] = useState<'valuation' | 'consumption' | 'expiry' | 'variance' | 'ledger'>('valuation');
+  const [activeTab, setActiveTab] = useState<'valuation' | 'consumption' | 'expiry' | 'variance' | 'ledger' | 'cases'>('valuation');
 
   // Ledger Filter states
   const [ledgerStartDate, setLedgerStartDate] = useState(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]); // 30 days ago
   const [ledgerEndDate, setLedgerEndDate] = useState(new Date().toISOString().split('T')[0]); // today
+
+  // Cases Registry Filter states
+  const [caseSearchQuery, setCaseSearchQuery] = useState('');
+  const [caseTypeFilter, setCaseTypeFilter] = useState('');
   const [ledgerTypeFilter, setLedgerTypeFilter] = useState('');
 
   // Consumption Grouping state
@@ -288,6 +294,53 @@ export const Reports: React.FC = () => {
     exportToCSV(formattedData, headers, `stock_ledger_audit_log`);
   };
 
+  // ==================== 6. Procedures Registry Calculations ====================
+  const getFilteredCases = () => {
+    return procedures.filter(proc => {
+      const matchesSearch = !caseSearchQuery || 
+        proc.caseId.toLowerCase().includes(caseSearchQuery.toLowerCase()) ||
+        proc.patientRef.toLowerCase().includes(caseSearchQuery.toLowerCase()) ||
+        proc.operator.toLowerCase().includes(caseSearchQuery.toLowerCase());
+      
+      const matchesType = !caseTypeFilter || proc.procedureType === caseTypeFilter;
+      return matchesSearch && matchesType;
+    }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime() || (b.id || 0) - (a.id || 0));
+  };
+
+  const filteredCases = getFilteredCases();
+
+  const handleExportProceduresRegistry = () => {
+    const headers = [
+      { key: 'caseId', label: 'Case ID' },
+      { key: 'date', label: 'Date' },
+      { key: 'patientRef', label: 'Patient Ref' },
+      { key: 'procedureType', label: 'Procedure Type' },
+      { key: 'operator', label: 'Consultant Cardiologist' },
+      { key: 'technician', label: 'Cath Lab Technician' },
+      { key: 'packageName', label: 'PMJAY Package' },
+      { key: 'ceiling', label: 'Ceiling' },
+      { key: 'totalCost', label: 'Total Cost' },
+      { key: 'status', label: 'Status' },
+      { key: 'justification', label: 'Justification' }
+    ];
+
+    const data = filteredCases.map(proc => ({
+      caseId: proc.caseId,
+      date: proc.date,
+      patientRef: proc.patientRef,
+      procedureType: proc.procedureType,
+      operator: proc.operator,
+      technician: proc.technician || '—',
+      packageName: proc.pmjayPackageName || 'N/A (General)',
+      ceiling: proc.pmjayCeilingAmount || 0,
+      totalCost: proc.totalCost,
+      status: proc.overCeiling ? 'Over Ceiling' : 'Compliant',
+      justification: proc.overCeilingReason || '—'
+    }));
+
+    exportToCSV(data, headers, `procedures_registry_export`);
+  };
+
   return (
     <div className="p-6 space-y-6">
       
@@ -346,6 +399,14 @@ export const Reports: React.FC = () => {
           }`}
         >
           <History className="w-4 h-4" /> Audit Stock Ledger
+        </button>
+        <button
+          onClick={() => setActiveTab('cases')}
+          className={`py-3 px-5 text-sm font-semibold border-b-2 -mb-[2px] transition-colors flex items-center gap-2 ${
+            activeTab === 'cases' ? 'border-blue-600 text-blue-600' : 'border-transparent text-slate-505 hover:text-slate-800'
+          }`}
+        >
+          <Activity className="w-4 h-4" /> Procedures Registry
         </button>
       </div>
 
@@ -905,6 +966,108 @@ export const Reports: React.FC = () => {
               </table>
             </div>
           </div>
+          {/* Official Signatures for records */}
+          <div className="hidden print:grid grid-cols-2 gap-8 pt-16 text-xs font-sans font-medium text-slate-700">
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* Tab Content: Procedures Registry */}
+      {/* ========================================================================= */}
+      {activeTab === 'cases' && (
+        <div className="space-y-4 print-only-container text-left">
+          <div className="flex flex-col sm:flex-row gap-3 justify-between items-end no-print">
+            <div className="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Search Cases</label>
+                <div className="relative">
+                  <Search className="absolute left-2.5 top-2.5 w-3.5 h-3.5 text-slate-450" />
+                  <input
+                    type="text"
+                    placeholder="Search by Cardiologist, Patient Ref, Case ID..."
+                    value={caseSearchQuery}
+                    onChange={(e) => setCaseSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-xs"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">Filter by Type</label>
+                <select
+                  value={caseTypeFilter}
+                  onChange={(e) => setCaseTypeFilter(e.target.value)}
+                  className="w-full p-2 border border-slate-200 rounded-lg text-xs"
+                >
+                  <option value="">All Procedure Types</option>
+                  <option value="PCI">PCI (Coronary Stent)</option>
+                  <option value="PPI">PPI (Pacemaker)</option>
+                  <option value="BMV">BMV (Mitral Balloon)</option>
+                  <option value="ASD">ASD (Device Closure)</option>
+                  <option value="PDA">PDA (Device Closure)</option>
+                </select>
+              </div>
+            </div>
+            
+            <button
+              onClick={handleExportProceduresRegistry}
+              className="flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 py-2 px-4 rounded-lg border border-blue-150 shadow-2xs cursor-pointer"
+            >
+              <Download className="w-3.5 h-3.5" /> Export Registry CSV
+            </button>
+          </div>
+
+          <div className="hidden print:block text-center border-b-2 border-slate-900 pb-3 mb-6">
+            <h2 className="text-base font-bold uppercase font-serif">DEPARTMENT OF CARDIOLOGY</h2>
+            <h3 className="text-xs font-bold uppercase font-serif">SHYAM SHAH MEDICAL COLLEGE & ASSOCIATED HOSPITALS, REWA</h3>
+            <p className="text-[10px] text-slate-550 mt-1">Official Clinical Procedures & Consumable Registry — Generated {new Date().toLocaleDateString()}</p>
+          </div>
+
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden print-card">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-slate-200 text-slate-500 font-bold bg-slate-50 uppercase tracking-wider">
+                  <th className="py-2.5 px-4">Date</th>
+                  <th className="py-2.5 px-4">Case ID</th>
+                  <th className="py-2.5 px-4">Patient Reference</th>
+                  <th className="py-2.5 px-4">Procedure Type</th>
+                  <th className="py-2.5 px-4">Consultant Cardiologist</th>
+                  <th className="py-2.5 px-4 text-right">Consumables Amount</th>
+                  <th className="py-2.5 px-4 text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-medium text-slate-800">
+                {filteredCases.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-8 text-slate-400 italic">No cases found matching filters.</td>
+                  </tr>
+                ) : (
+                  filteredCases.map((proc) => (
+                    <tr key={proc.id} className="hover:bg-slate-50/50 cursor-pointer" onClick={() => setActiveProcedure(proc)}>
+                      <td className="py-3 px-4 text-slate-500 font-mono">{proc.date}</td>
+                      <td className="py-3 px-4 font-bold text-slate-900 font-mono">{proc.caseId}</td>
+                      <td className="py-3 px-4 font-mono">{proc.patientRef}</td>
+                      <td className="py-3 px-4">{proc.procedureType}</td>
+                      <td className="py-3 px-4 text-slate-700">{proc.operator}</td>
+                      <td className="py-3 px-4 text-right font-mono font-bold text-slate-900">{formatRupees(proc.totalCost)}</td>
+                      <td className="py-3 px-4 text-center">
+                        {proc.overCeiling ? (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-100 uppercase">
+                            Over Ceiling
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase">
+                            Compliant
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+
           {/* Official Signatures for records */}
           <div className="hidden print:grid grid-cols-2 gap-8 pt-16 text-xs font-sans font-medium text-slate-700">
             <div>
