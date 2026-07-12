@@ -65,6 +65,7 @@ export interface Procedure {
 export interface Requisition {
   id?: number;
   requisitionNo: string; // R-YYYYMMDD-XXXX
+  officeNo?: string; // Office Reference / Dispatch Number
   date: string;
   status: 'draft' | 'submitted' | 'received';
   type: 'auto' | 'manual';

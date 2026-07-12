@@ -491,20 +491,29 @@ export const Requisitions: React.FC = () => {
               )}
             </div>
 
-            {/* Requisition Metadata Details */}
-            <div className="grid grid-cols-2 gap-4 text-xs font-sans border-b border-slate-200 pb-5">
-              <div className="space-y-1.5">
-                <div>Requisition ID: <span className="font-mono font-bold">{selectedReq.requisitionNo}</span></div>
-                <div>Status: <span className="uppercase font-bold text-slate-800">{selectedReq.status}</span></div>
-                <div>Billing Type: <span className="uppercase font-bold text-slate-700">{selectedReq.type}</span></div>
-              </div>
-              <div className="space-y-1.5 text-right">
-                <div>Date Generated: <span className="font-semibold">{selectedReq.date}</span></div>
-                {selectedReq.operator && (
-                  <div>Drafting Operator: <span className="font-semibold">{selectedReq.operator}</span></div>
-                )}
-              </div>
-            </div>
+            {/* Address block to Dean/Superintendent SSB */}
+             <div className="text-left font-sans text-xs space-y-0.5 mb-4 text-slate-800 leading-normal">
+               <p className="font-bold">To,</p>
+               <p className="font-bold ml-4">The Dean / Superintendent SSB,</p>
+               <p className="font-bold ml-4">Shyam Shah Medical College & Associated Hospitals,</p>
+               <p className="font-bold ml-4">Rewa (M.P.)</p>
+             </div>
+
+             {/* Requisition Metadata Details */}
+             <div className="grid grid-cols-2 gap-4 text-xs font-sans border-b border-slate-200 pb-5">
+               <div className="space-y-1.5">
+                 <div>Requisition ID: <span className="font-mono font-bold">{selectedReq.requisitionNo}</span></div>
+                 <div>Office Dispatch/Ref No: <span className="font-mono font-bold text-slate-900">{selectedReq.officeNo || "____________________"}</span></div>
+                 <div>Status: <span className="uppercase font-bold text-slate-800">{selectedReq.status}</span></div>
+               </div>
+               <div className="space-y-1.5 text-right">
+                 <div>Date Generated: <span className="font-semibold">{selectedReq.date}</span></div>
+                 <div>Billing Type: <span className="uppercase font-bold text-slate-700">{selectedReq.type}</span></div>
+                 {selectedReq.operator && (
+                   <div>Drafting Operator: <span className="font-semibold">{selectedReq.operator}</span></div>
+                 )}
+               </div>
+             </div>
 
             {/* Editable drafting controls - Hidden during print */}
             {isEditing && selectedReq.status === 'draft' && (
@@ -513,7 +522,7 @@ export const Requisitions: React.FC = () => {
                   Draft Editor Controls
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-600 mb-1">Drafting Operator Name *</label>
                     <input
@@ -526,6 +535,17 @@ export const Requisitions: React.FC = () => {
                     />
                   </div>
                   
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Office Dispatch / Reference No. *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. SSMC/CARD/2026/45"
+                      value={selectedReq.officeNo || ''}
+                      onChange={(e) => setSelectedReq({ ...selectedReq, officeNo: e.target.value })}
+                      className="w-full p-2 border border-slate-200 rounded-lg text-xs font-medium bg-white"
+                    />
+                  </div>
+
                   {/* Search and Add items to requisition */}
                   <div className="relative">
                     <label className="block text-xs font-semibold text-slate-600 mb-1">Search & Add Item to List</label>
@@ -633,21 +653,25 @@ export const Requisitions: React.FC = () => {
             </div>
 
             {/* Official Signature Blocks (Shows beautifully on printed PDF sheets) */}
-            <div className="pt-16 grid grid-cols-2 gap-8 text-xs font-sans font-medium text-slate-750">
-              <div className="space-y-12">
-                <div className="border-t border-slate-500 pt-2 w-48 text-center">
-                  Cath Lab Scrub Nurse / Staff
-                </div>
-                <div className="text-[10px] text-slate-450 italic">
-                  Draft generated: {selectedReq.date}
+            <div className="pt-20 grid grid-cols-4 gap-6 text-[9px] font-sans font-medium text-slate-700">
+              <div className="text-center space-y-12">
+                <div className="border-t border-slate-500 pt-2">
+                  Cardiologist 1
                 </div>
               </div>
-              <div className="flex flex-col items-end space-y-12">
-                <div className="border-t border-slate-500 pt-2 w-48 text-center">
-                  HOD, Department of Cardiology
+              <div className="text-center space-y-12">
+                <div className="border-t border-slate-500 pt-2">
+                  Cardiologist 2
                 </div>
-                <div className="text-[10px] text-slate-450 italic text-right">
-                  Official Stamp & Date
+              </div>
+              <div className="text-center space-y-12">
+                <div className="border-t border-slate-500 pt-2">
+                  Cardiologist 3
+                </div>
+              </div>
+              <div className="text-center space-y-12">
+                <div className="border-t border-slate-500 pt-2">
+                  Head of Department, Cardiology
                 </div>
               </div>
             </div>
