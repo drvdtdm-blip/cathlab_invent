@@ -409,6 +409,7 @@ export const NewCase: React.FC<NewCaseProps> = ({ onSuccess }) => {
                     className="w-full p-2 border border-slate-200 rounded-lg text-sm font-medium"
                   >
                     <option value="PCI">PCI (Coronary Stents)</option>
+                    <option value="Coronary Angiography">Coronary Angiography</option>
                     <option value="PPI">PPI (Pacemaker)</option>
                     <option value="BMV">BMV (Mitral Balloon)</option>
                     <option value="ASD">ASD (Device Closure)</option>

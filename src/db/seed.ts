@@ -15,6 +15,12 @@ export const resetDatabase = async () => {
     // Seed the standard PMJAY packages (MP HBP 2022 rates) without preloaded items
     const seedPackages: Omit<PmjayPackage, 'id'>[] = [
       {
+        code: "MC001A",
+        name: "Coronary Angiography (Diagnostic) Package",
+        ceilingAmount: 11000,
+        defaultConsumables: []
+      },
+      {
         code: "MC011A",
         name: "PCI (Percutaneous Coronary Intervention) Package",
         ceilingAmount: 62212,

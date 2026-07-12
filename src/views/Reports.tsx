@@ -1001,6 +1001,7 @@ export const Reports: React.FC = () => {
                 >
                   <option value="">All Procedure Types</option>
                   <option value="PCI">PCI (Coronary Stent)</option>
+                  <option value="Coronary Angiography">Coronary Angiography</option>
                   <option value="PPI">PPI (Pacemaker)</option>
                   <option value="BMV">BMV (Mitral Balloon)</option>
                   <option value="ASD">ASD (Device Closure)</option>
