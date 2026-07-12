@@ -22,8 +22,20 @@ export const resetDatabase = async () => {
       },
       {
         code: "MC011A",
-        name: "PCI (Percutaneous Coronary Intervention) Package",
+        name: "PCI with 1 Stent Package",
         ceilingAmount: 62212,
+        defaultConsumables: []
+      },
+      {
+        code: "MC011B",
+        name: "PCI with 2 Stents Package",
+        ceilingAmount: 82212,
+        defaultConsumables: []
+      },
+      {
+        code: "MC011C",
+        name: "PCI with 3 Stents Package",
+        ceilingAmount: 102212,
         defaultConsumables: []
       },
       {

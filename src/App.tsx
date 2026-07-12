@@ -26,11 +26,11 @@ function App() {
           localStorage.setItem('cathlab_consultants', JSON.stringify(defaultDocs));
         }
 
-        const hasCleanReset = localStorage.getItem('cathlab_clean_reset_v1');
+        const hasCleanReset = localStorage.getItem('cathlab_clean_reset_v2');
         if (!hasCleanReset) {
           console.log("Forcing initial clean database reset...");
           await resetDatabase();
-          localStorage.setItem('cathlab_clean_reset_v1', 'true');
+          localStorage.setItem('cathlab_clean_reset_v2', 'true');
         } else {
           const count = await db.items.count();
           if (count === 0) {
