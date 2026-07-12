@@ -502,7 +502,6 @@ export const Requisitions: React.FC = () => {
              {/* Requisition Metadata Details */}
              <div className="grid grid-cols-2 gap-4 text-xs font-sans border-b border-slate-200 pb-5">
                <div className="space-y-1.5">
-                 <div>Requisition ID: <span className="font-mono font-bold">{selectedReq.requisitionNo}</span></div>
                  <div>Office Dispatch/Ref No: <span className="font-mono font-bold text-slate-900">{selectedReq.officeNo || "____________________"}</span></div>
                  <div>Status: <span className="uppercase font-bold text-slate-800">{selectedReq.status}</span></div>
                </div>
