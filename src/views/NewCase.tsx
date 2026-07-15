@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type Item, type Procedure, type LedgerEntry } from '../db/db';
+import { useSupabaseTable } from '../hooks/useSupabaseTable';
+import { db, type Item, type Procedure, type LedgerEntry, type PmjayPackage } from '../db/db';
 import { 
   FilePlus, 
   Trash2, 
@@ -28,8 +28,8 @@ interface SelectedItem {
 
 export const NewCase: React.FC<NewCaseProps> = ({ onSuccess }) => {
   // Queries
-  const allItems = useLiveQuery(() => db.items.toArray(), []) || [];
-  const pmjayPackages = useLiveQuery(() => db.pmjayPackages.toArray(), []) || [];
+  const { data: allItems = [] } = useSupabaseTable<Item>('items');
+  const { data: pmjayPackages = [] } = useSupabaseTable<PmjayPackage>('pmjay_packages');
 
   // Form Fields
   const [caseId, setCaseId] = useState('');

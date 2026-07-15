@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseTable } from '../hooks/useSupabaseTable';
 import { db, type Requisition, type Item, type LedgerEntry } from '../db/db';
 import { 
   Plus, 
@@ -15,8 +15,8 @@ import {
 
 export const Requisitions: React.FC = () => {
   // Queries
-  const requisitions = useLiveQuery(() => db.requisitions.toArray(), []) || [];
-  const allItems = useLiveQuery(() => db.items.toArray(), []) || [];
+  const { data: requisitions = [] } = useSupabaseTable<Requisition>('requisitions');
+  const { data: allItems = [] } = useSupabaseTable<Item>('items');
 
   // Navigation states
   const [selectedReq, setSelectedReq] = useState<Requisition | null>(null);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseTable } from '../hooks/useSupabaseTable';
 import { db, type Item, type LedgerEntry } from '../db/db';
 import { 
   Search, 
@@ -11,7 +11,7 @@ import {
 
 export const Inventory: React.FC = () => {
   // Queries
-  const items = useLiveQuery(() => db.items.toArray(), []) || [];
+  const { data: items = [] } = useSupabaseTable<Item>('items');
   
   // States
   const [searchTerm, setSearchTerm] = useState('');

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { useSupabaseTable } from '../hooks/useSupabaseTable';
 import { db, type PmjayPackage, type Item } from '../db/db';
 import { resetDatabase } from '../db/seed';
 import { 
@@ -18,8 +18,8 @@ interface SettingsProps {
 
 export const Settings: React.FC<SettingsProps> = ({ onResetSuccess }) => {
   // Queries
-  const pmjayPackages = useLiveQuery(() => db.pmjayPackages.toArray(), []) || [];
-  const allItems = useLiveQuery(() => db.items.toArray(), []) || [];
+  const { data: pmjayPackages = [] } = useSupabaseTable<PmjayPackage>('pmjay_packages');
+  const { data: allItems = [] } = useSupabaseTable<Item>('items');
 
   // Editing state
   const [editingPkg, setEditingPkg] = useState<PmjayPackage | null>(null);

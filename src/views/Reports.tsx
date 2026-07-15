@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type Procedure } from '../db/db';
+import { useSupabaseTable } from '../hooks/useSupabaseTable';
+import { type Procedure, type Item, type LedgerEntry, type PmjayPackage } from '../db/db';
 import { exportToExcel } from '../utils/excel';
 import { ProcedurePrintModal } from '../components/ProcedurePrintModal';
 import { 
@@ -19,11 +19,12 @@ import {
 export const Reports: React.FC = () => {
   const [activeProcedure, setActiveProcedure] = useState<Procedure | null>(null);
   const [exportMonth, setExportMonth] = useState(new Date().toISOString().substring(0, 7)); // YYYY-MM
+  
   // Queries
-  const items = useLiveQuery(() => db.items.toArray(), []) || [];
-  const procedures = useLiveQuery(() => db.procedures.toArray(), []) || [];
-  const ledger = useLiveQuery(() => db.ledger.toArray(), []) || [];
-  const pmjayPackages = useLiveQuery(() => db.pmjayPackages.toArray(), []) || [];
+  const { data: items = [] } = useSupabaseTable<Item>('items');
+  const { data: procedures = [] } = useSupabaseTable<Procedure>('procedures');
+  const { data: ledger = [] } = useSupabaseTable<LedgerEntry>('ledger');
+  const { data: pmjayPackages = [] } = useSupabaseTable<PmjayPackage>('pmjay_packages');
 
   // Active Report Tab
   const [activeTab, setActiveTab] = useState<'valuation' | 'consumption' | 'expiry' | 'variance' | 'ledger' | 'cases'>('valuation');

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type Procedure } from '../db/db';
+import { useSupabaseTable } from '../hooks/useSupabaseTable';
+import { type Procedure, type Item } from '../db/db';
 import { ProcedurePrintModal } from '../components/ProcedurePrintModal';
 import { 
   IndianRupee, 
@@ -28,51 +28,42 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
     setRememberedDoctors(docs);
   }, []);
 
-  // Live query for metrics
-  const metrics = useLiveQuery(async () => {
-    const items = await db.items.toArray();
-    const procedures = await db.procedures.toArray();
-    
-    // 1. Total Stock Value
-    const totalStockValue = items.reduce((acc, curr) => acc + (curr.currentQuantity * curr.unitCost), 0);
-    
-    // 2. Low Stock Count
-    const lowStockCount = items.filter(i => i.currentQuantity <= i.reorderLevel).length;
+  // Fetch Supabase data reactively
+  const { data: items = [] } = useSupabaseTable<Item>('items');
+  const { data: procedures = [] } = useSupabaseTable<Procedure>('procedures');
 
-    // 3. Expiring <30 Days (excluding already expired, or including expired? Let's check both)
-    const nowEpoch = Date.now();
-    const thirtyDaysLimit = nowEpoch + 30 * 24 * 60 * 60 * 1000;
-    const expiringSoon = items.filter(i => {
-      const expEpoch = new Date(i.expiryDate).getTime();
-      return expEpoch <= thirtyDaysLimit;
-    }).length;
+  // 1. Total Stock Value
+  const totalStockValue = items.reduce((acc, curr) => acc + (curr.currentQuantity * curr.unitCost), 0);
+  
+  // 2. Low Stock Count
+  const lowStockCount = items.filter(i => i.currentQuantity <= i.reorderLevel).length;
 
-    // 4. Cases this month
-    const currentMonth = new Date().toISOString().substring(0, 7); // YYYY-MM
-    const casesThisMonth = procedures.filter(p => p.date.startsWith(currentMonth));
-    const casesCount = casesThisMonth.length;
+  // 3. Expiring <30 Days
+  const nowEpoch = Date.now();
+  const thirtyDaysLimit = nowEpoch + 30 * 24 * 60 * 60 * 1000;
+  const expiringSoon = items.filter(i => {
+    const expEpoch = new Date(i.expiryDate).getTime();
+    return expEpoch <= thirtyDaysLimit;
+  }).length;
 
-    // 5. Over-ceiling cases this month
-    const overCeilingCount = casesThisMonth.filter(p => p.overCeiling).length;
+  // 4. Cases this month
+  const currentMonth = new Date().toISOString().substring(0, 7); // YYYY-MM
+  const casesThisMonth = procedures.filter(p => p.date.startsWith(currentMonth));
+  const casesCount = casesThisMonth.length;
 
-    // 6. Procedures
-    const allProcs = procedures.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime() || (b.id || 0) - (a.id || 0));
+  // 5. Over-ceiling cases this month
+  const overCeilingCount = casesThisMonth.filter(p => p.overCeiling).length;
 
-    return {
-      totalStockValue,
-      lowStockCount,
-      expiringSoon,
-      casesCount,
-      overCeilingCount,
-      procedures: allProcs
-    };
-  }, []) || {
-    totalStockValue: 0,
-    lowStockCount: 0,
-    expiringSoon: 0,
-    casesCount: 0,
-    overCeilingCount: 0,
-    procedures: []
+  // 6. Sort procedures
+  const allProcs = [...procedures].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime() || (b.id || 0) - (a.id || 0));
+
+  const metrics = {
+    totalStockValue,
+    lowStockCount,
+    expiringSoon,
+    casesCount,
+    overCeilingCount,
+    procedures: allProcs
   };
 
   // Filter display list doctor wise

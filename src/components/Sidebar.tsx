@@ -1,6 +1,6 @@
 import React from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../db/db';
+import { useSupabaseTable } from '../hooks/useSupabaseTable';
+import { type Item } from '../db/db';
 import { 
   LayoutDashboard, 
   Boxes, 
@@ -16,22 +16,18 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) => {
+  const { data: items = [] } = useSupabaseTable<Item>('items');
+
   // Query low-stock count reactively
-  const lowStockCount = useLiveQuery(async () => {
-    const items = await db.items.toArray();
-    return items.filter(i => i.currentQuantity <= i.reorderLevel).length;
-  }, []) ?? 0;
+  const lowStockCount = items.filter(i => i.currentQuantity <= i.reorderLevel).length;
 
   // Query expiring count (<30 days) reactively
-  const expiringCount = useLiveQuery(async () => {
-    const items = await db.items.toArray();
-    const nowEpoch = Date.now();
-    const thirtyDaysLimit = nowEpoch + 30 * 24 * 60 * 60 * 1000;
-    return items.filter(i => {
-      const expEpoch = new Date(i.expiryDate).getTime();
-      return expEpoch >= nowEpoch && expEpoch <= thirtyDaysLimit;
-    }).length;
-  }, []) ?? 0;
+  const nowEpoch = Date.now();
+  const thirtyDaysLimit = nowEpoch + 30 * 24 * 60 * 60 * 1000;
+  const expiringCount = items.filter(i => {
+    const expEpoch = new Date(i.expiryDate).getTime();
+    return expEpoch >= nowEpoch && expEpoch <= thirtyDaysLimit;
+  }).length;
 
   const navItems = [
     { id: 'dashboard', name: 'Dashboard', icon: LayoutDashboard },
@@ -108,8 +104,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) =
         <div className="flex items-center gap-3 text-xs text-slate-400">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
           <div>
-            <p className="font-semibold text-slate-300">IndexedDB Storage</p>
-            <p className="text-[10px] text-slate-550">Offline-first Mode Active</p>
+            <p className="font-semibold text-slate-300">Supabase Cloud</p>
+            <p className="text-[10px] text-slate-550">Realtime Sync Active</p>
           </div>
         </div>
         <div className="pt-2 border-t border-slate-800/80 text-[10px] text-slate-450 font-bold tracking-wider uppercase text-center">
