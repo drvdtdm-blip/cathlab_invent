@@ -83,6 +83,11 @@ export interface Requisition {
   }[];
 }
 
+const isDummyMode = () => {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+  return supabaseUrl.includes('your-project-id') || !supabaseUrl;
+};
+
 class SupabaseTableWrapper<T> {
   tableName: string;
   constructor(tableName: string) {
@@ -90,6 +95,7 @@ class SupabaseTableWrapper<T> {
   }
 
   async toArray(): Promise<T[]> {
+    if (isDummyMode()) return [];
     const { data, error } = await supabase.from(this.tableName).select('*');
     if (error) {
       console.error(`Error in toArray for ${this.tableName}:`, error);
@@ -99,6 +105,7 @@ class SupabaseTableWrapper<T> {
   }
 
   async count(): Promise<number> {
+    if (isDummyMode()) return 0;
     const { count, error } = await supabase
       .from(this.tableName)
       .select('*', { count: 'exact', head: true });
@@ -110,6 +117,7 @@ class SupabaseTableWrapper<T> {
   }
 
   async get(id: number | string): Promise<T | undefined> {
+    if (isDummyMode()) return undefined;
     const { data, error } = await supabase
       .from(this.tableName)
       .select('*')
@@ -123,6 +131,7 @@ class SupabaseTableWrapper<T> {
   }
 
   async add(item: Omit<T, 'id'>): Promise<number> {
+    if (isDummyMode()) return 0;
     // Clean out any undefined or null id values to prevent database issues
     const payload = { ...item } as any;
     delete payload.id;
@@ -140,6 +149,7 @@ class SupabaseTableWrapper<T> {
   }
 
   async put(item: T): Promise<number> {
+    if (isDummyMode()) return 0;
     const { data, error } = await supabase
       .from(this.tableName)
       .upsert(item as any)
@@ -153,6 +163,7 @@ class SupabaseTableWrapper<T> {
   }
 
   async delete(id: number | string): Promise<void> {
+    if (isDummyMode()) return;
     const { error } = await supabase
       .from(this.tableName)
       .delete()
@@ -164,6 +175,7 @@ class SupabaseTableWrapper<T> {
   }
 
   async clear(): Promise<void> {
+    if (isDummyMode()) return;
     const { error } = await supabase
       .from(this.tableName)
       .delete()
@@ -181,6 +193,7 @@ class SupabaseTableWrapper<T> {
           reverse: () => {
             return {
               sortBy: async (sortField: string): Promise<T[]> => {
+                if (isDummyMode()) return [];
                 const { data, error } = await supabase
                   .from(this.tableName)
                   .select('*')
@@ -195,6 +208,7 @@ class SupabaseTableWrapper<T> {
             };
           },
           sortBy: async (sortField: string): Promise<T[]> => {
+            if (isDummyMode()) return [];
             const { data, error } = await supabase
               .from(this.tableName)
               .select('*')
@@ -207,6 +221,7 @@ class SupabaseTableWrapper<T> {
             return (data || []) as unknown as T[];
           },
           toArray: async (): Promise<T[]> => {
+            if (isDummyMode()) return [];
             const { data, error } = await supabase
               .from(this.tableName)
               .select('*')

@@ -7,6 +7,15 @@ export function useSupabaseTable<T>(tableName: string) {
   const [error, setError] = useState<any>(null);
 
   useEffect(() => {
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+    const isDummy = supabaseUrl.includes('your-project-id') || !supabaseUrl;
+
+    if (isDummy) {
+      setData([]);
+      setLoading(false);
+      return;
+    }
+
     let active = true;
 
     async function fetchData() {
@@ -32,21 +41,32 @@ export function useSupabaseTable<T>(tableName: string) {
 
     fetchData();
 
-    // Subscribe to realtime changes
-    const channel = supabase
-      .channel(`public:${tableName}-realtime`)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: tableName },
-        () => {
-          fetchData();
-        }
-      )
-      .subscribe();
+    // Subscribe to realtime changes safely
+    let channel: any = null;
+    try {
+      channel = supabase
+        .channel(`public:${tableName}-realtime`)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: tableName },
+          () => {
+            fetchData();
+          }
+        )
+        .subscribe();
+    } catch (subErr) {
+      console.error(`Failed to subscribe to realtime for ${tableName}:`, subErr);
+    }
 
     return () => {
       active = false;
-      supabase.removeChannel(channel);
+      if (channel) {
+        try {
+          supabase.removeChannel(channel);
+        } catch (unsubErr) {
+          console.error(`Failed to unsubscribe for ${tableName}:`, unsubErr);
+        }
+      }
     };
   }, [tableName]);
 
