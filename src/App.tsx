@@ -7,16 +7,38 @@ import { Requisitions } from './views/Requisitions';
 import { Reports } from './views/Reports';
 import { Settings } from './views/Settings';
 import { LandingPage } from './views/LandingPage';
+import { Login } from './components/Login';
 import { db } from './db/db';
 import { resetDatabase } from './db/seed';
+import { supabase } from './db/supabaseClient';
 
 function App() {
+  const [session, setSession] = useState<any>(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
   const [currentView, setCurrentView] = useState<string>('landing');
   const [dbInitialized, setDbInitialized] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0); // to force reload views when db resets
 
+  // Auth Session check
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setSessionLoading(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setSessionLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   // Startup Database Seeding Check
   useEffect(() => {
+    // Only run seed check if we have a valid session
+    if (!session) return;
+
     const checkAndSeed = async () => {
       try {
         // Preinstall cardiologist list if empty or not set
@@ -47,7 +69,7 @@ function App() {
       }
     };
     checkAndSeed();
-  }, [refreshKey]);
+  }, [refreshKey, session]);
 
   const handleResetSuccess = () => {
     setRefreshKey(prev => prev + 1);
@@ -73,11 +95,24 @@ function App() {
     }
   };
 
+  if (sessionLoading) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-sm font-semibold tracking-wide text-slate-400 font-sans">Checking Session Credentials...</p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return <Login />;
+  }
+
   if (!dbInitialized) {
     return (
       <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white">
         <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-sm font-semibold tracking-wide text-slate-400">Initializing Database Schema...</p>
+        <p className="mt-4 text-sm font-semibold tracking-wide text-slate-400 font-sans">Initializing Database Schema...</p>
       </div>
     );
   }
