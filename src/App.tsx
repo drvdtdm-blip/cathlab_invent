@@ -41,11 +41,11 @@ function App() {
 
     const checkAndSeed = async () => {
       try {
-        // Preinstall cardiologist list if empty or not set
-        const currentConsultants = localStorage.getItem('cathlab_consultants');
-        if (!currentConsultants || currentConsultants === '[]') {
-          const defaultDocs = ["Dr. V. D. Tripathi", "Dr. S. K. Tripathi", "Dr. A. Shukla", "Dr. S. K. Tiwari"];
-          localStorage.setItem('cathlab_consultants', JSON.stringify(defaultDocs));
+        // Reset doctor list to start empty
+        const resetDone = localStorage.getItem('cathlab_consultants_reset_v2');
+        if (!resetDone) {
+          localStorage.setItem('cathlab_consultants', JSON.stringify([]));
+          localStorage.setItem('cathlab_consultants_reset_v2', 'true');
         }
 
         const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
