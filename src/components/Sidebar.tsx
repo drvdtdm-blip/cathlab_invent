@@ -15,9 +15,10 @@ import {
 interface SidebarProps {
   currentView: string;
   onViewChange: (view: string) => void;
+  userRole: 'admin' | 'inventory' | 'clinical';
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange, userRole }) => {
   const { data: items = [] } = useSupabaseTable<Item>('items');
 
   // Query low-stock count reactively
@@ -40,6 +41,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) =
     { id: 'settings', name: 'Settings', icon: Settings },
   ];
 
+  const allowedItems = navItems.filter(item => {
+    if (userRole === 'admin') return true;
+    if (userRole === 'inventory') {
+      return ['dashboard', 'inventory', 'requisitions'].includes(item.id);
+    }
+    if (userRole === 'clinical') {
+      return ['dashboard', 'new-case', 'reports'].includes(item.id);
+    }
+    return false;
+  });
+
   return (
     <aside className="w-64 bg-slate-900 text-white min-h-screen flex flex-col justify-between border-r border-slate-800 no-print">
       <div className="flex flex-col">
@@ -54,14 +66,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) =
               <span className="text-[10px] text-slate-400 font-medium block mt-1 leading-tight">Inventory Management System</span>
             </div>
           </div>
-          <div className="mt-2.5 text-[9px] text-slate-550 uppercase tracking-widest font-bold">
+          <div className="mt-2.5 text-[9px] text-slate-555 uppercase tracking-widest font-bold">
             SSMC Rewa
           </div>
         </div>
 
         {/* Navigation Items */}
         <nav className="p-4 space-y-1 flex-1">
-          {navItems.map((item) => {
+          {allowedItems.map((item) => {
             const Icon = item.icon;
             const isActive = currentView === item.id;
             return (
