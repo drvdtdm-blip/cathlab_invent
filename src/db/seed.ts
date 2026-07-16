@@ -1,6 +1,6 @@
 import { db, type PmjayPackage } from './db';
 
-// Seed the cardiology packages matrix based on approved prices (including 15% NABH inflation)
+// Seed the cardiology packages matrix based on approved prices (including 15% NABH inflation and specific stent packages)
 export const resetDatabase = async () => {
   // Clear all tables for a clean slate
   await db.transaction('rw', [db.items, db.ledger, db.pmjayPackages, db.procedures, db.requisitions], async () => {
@@ -11,7 +11,7 @@ export const resetDatabase = async () => {
     await db.requisitions.clear();
 
     const seedPackages: Omit<PmjayPackage, 'id'>[] = [
-      // 1. Pacemaker Implantation Packages (with 15% NABH markup)
+      // 1. Pacemaker Implantation Packages
       {
         code: "MC014",
         name: "Temporary Pacemaker implantation",
@@ -31,11 +31,29 @@ export const resetDatabase = async () => {
         defaultConsumables: []
       },
 
-      // 2. Interventional & Device Closure Packages (with 15% NABH markup)
+      // 2. Interventional & Device Closure Packages
       {
         code: "MC011",
         name: "PTCA, inclusive of diagnostic angiogram",
         ceilingAmount: 36952,
+        defaultConsumables: []
+      },
+      {
+        code: "MC011A",
+        name: "PTCA with 1 Stent",
+        ceilingAmount: 35834,
+        defaultConsumables: []
+      },
+      {
+        code: "MC011B",
+        name: "PTCA with 2 Stents",
+        ceilingAmount: 71668,
+        defaultConsumables: []
+      },
+      {
+        code: "MC011C",
+        name: "PTCA with 3 Stents",
+        ceilingAmount: 107502,
         defaultConsumables: []
       },
       {
@@ -69,7 +87,7 @@ export const resetDatabase = async () => {
         defaultConsumables: []
       },
 
-      // 3. Catheterization & Balloon Dilatation Packages (with 15% NABH markup)
+      // 3. Catheterization & Balloon Dilatation Packages
       {
         code: "MC001A",
         name: "Right Heart Catheterization",
