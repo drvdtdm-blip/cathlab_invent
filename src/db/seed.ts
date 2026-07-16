@@ -35,7 +35,7 @@ export const resetDatabase = async () => {
       {
         code: "MC011",
         name: "PTCA, inclusive of diagnostic angiogram",
-        ceilingAmount: 36952,
+        ceilingAmount: 32132,
         defaultConsumables: []
       },
       {
