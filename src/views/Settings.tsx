@@ -161,7 +161,7 @@ export const Settings: React.FC<SettingsProps> = ({ onResetSuccess }) => {
                       <h4 className="text-sm font-bold text-slate-850 m-0">{pkg.name}</h4>
                     </div>
                     <p className="text-xs text-slate-600">
-                      Ceiling Limit: <span className="font-semibold text-slate-800">{formatRupees(pkg.ceilingAmount)}</span>
+                      Ceiling Limit: <span className="font-semibold text-slate-800">{pkg.ceilingAmount === 0 ? 'Stratification Required / Custom Quote' : formatRupees(pkg.ceilingAmount)}</span>
                     </p>
                     <p className="text-xs text-slate-500 font-medium">
                       Template Items: {pkg.defaultConsumables.length} item types preloaded

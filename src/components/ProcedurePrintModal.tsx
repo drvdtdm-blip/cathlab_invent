@@ -303,8 +303,8 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
               <p className="text-slate-450 font-bold uppercase tracking-wider text-[9px]">Patient & Billing</p>
               <p className="font-semibold text-slate-800 mt-1">Ref: <span className="font-mono">{procedure.patientRef}</span></p>
               <p className="text-slate-705 mt-1">Billing Category: {procedure.pmjayPackageName || 'Non-Ayushman (General Billing)'}</p>
-              {procedure.pmjayCeilingAmount ? (
-                <p className="text-slate-705 mt-1">Ceiling Amount: {formatRupees(procedure.pmjayCeilingAmount)}</p>
+              {procedure.pmjayCeilingAmount !== undefined ? (
+                <p className="text-slate-705 mt-1">Ceiling Amount: {procedure.pmjayCeilingAmount === 0 ? 'Custom Quote' : formatRupees(procedure.pmjayCeilingAmount)}</p>
               ) : null}
             </div>
           </div>
@@ -427,7 +427,7 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
                  <tr className="bg-slate-50 border-t border-slate-200 text-[10px]">
                    <td colSpan={4} className="py-2 px-3 text-right font-bold text-slate-500 uppercase">Approved Package Amount:</td>
                    <td className="py-2 px-3 text-right font-mono font-bold text-slate-800">
-                     {procedure.pmjayCeilingAmount ? formatRupees(procedure.pmjayCeilingAmount) : 'N/A (General)'}
+                     {procedure.pmjayCeilingAmount === 0 ? 'Stratification Required / Custom Quote' : (procedure.pmjayCeilingAmount ? formatRupees(procedure.pmjayCeilingAmount) : 'N/A (General)')}
                    </td>
                    {isEditing && <td></td>}
                  </tr>
@@ -446,7 +446,7 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
                      procedure.pmjayCeilingAmount && (activeCost > procedure.pmjayCeilingAmount) ? 'text-rose-700' : 'text-emerald-700'
                    }`}>
                      {procedure.pmjayCeilingAmount 
-                       ? formatRupees(Math.abs(procedure.pmjayCeilingAmount - activeCost))
+                       ? (procedure.pmjayCeilingAmount === 0 ? 'N/A' : formatRupees(Math.abs(procedure.pmjayCeilingAmount - activeCost)))
                        : '—'}
                    </td>
                    {isEditing && <td></td>}
@@ -462,7 +462,7 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
                 <AlertTriangle className="w-3.5 h-3.5" /> Budget Over-Ceiling Exceedance Warning
               </p>
               <p className="text-slate-800 font-semibold mt-1">
-                Exceeded package ceiling limit by {formatRupees(activeCost - (procedure.pmjayCeilingAmount || 0))}.
+                Exceeded package ceiling limit by {procedure.pmjayCeilingAmount === 0 ? 'N/A' : formatRupees(activeCost - (procedure.pmjayCeilingAmount || 0))}.
               </p>
               
               {isEditing ? (
@@ -550,8 +550,8 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
             )}
             <div>Cath Lab Room: <span className="font-semibold">{procedure.cathLab || 'Cathlab 1'}</span></div>
             <div>Billing Category: <span className="font-semibold">{procedure.pmjayPackageName || 'Non-Ayushman (General Billing)'}</span></div>
-            {procedure.pmjayCeilingAmount ? (
-              <div>Ceiling Amount: <span className="font-semibold font-mono">{formatRupees(procedure.pmjayCeilingAmount)}</span></div>
+            {procedure.pmjayCeilingAmount !== undefined ? (
+              <div>Ceiling Amount: <span className="font-semibold font-mono">{procedure.pmjayCeilingAmount === 0 ? 'Custom Quote' : formatRupees(procedure.pmjayCeilingAmount)}</span></div>
             ) : null}
           </div>
         </div>
@@ -588,7 +588,7 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
                <tr className="border-t border-slate-800 text-[10px] font-medium bg-slate-50">
                  <td colSpan={6} className="py-2 px-2 text-right uppercase tracking-wider text-[8px] font-bold text-slate-600">Approved Package Amount:</td>
                  <td className="py-2 px-2 text-right font-mono font-bold">
-                   {procedure.pmjayCeilingAmount ? formatRupees(procedure.pmjayCeilingAmount) : 'N/A (General)'}
+                   {procedure.pmjayCeilingAmount === 0 ? 'Stratification Required / Custom Quote' : (procedure.pmjayCeilingAmount ? formatRupees(procedure.pmjayCeilingAmount) : 'N/A (General)')}
                  </td>
                </tr>
                <tr className="border-t border-slate-200 text-[10px] font-medium bg-slate-50">
@@ -605,7 +605,7 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
                    procedure.overCeiling ? 'text-rose-700 font-black' : 'text-emerald-700 font-black'
                  }`}>
                    {procedure.pmjayCeilingAmount 
-                     ? formatRupees(Math.abs(procedure.pmjayCeilingAmount - procedure.totalCost))
+                     ? (procedure.pmjayCeilingAmount === 0 ? 'N/A' : formatRupees(Math.abs(procedure.pmjayCeilingAmount - procedure.totalCost)))
                      : '—'}
                  </td>
                </tr>
@@ -617,7 +617,7 @@ export const ProcedurePrintModal: React.FC<ProcedurePrintModalProps> = ({ proced
         {procedure.overCeiling && (
           <div className="p-4 border border-rose-200 bg-rose-50/20 rounded-lg text-xs font-sans space-y-1 mb-8">
             <p className="font-bold text-rose-850 uppercase tracking-wide text-[9px]">PMJAY Package Exceedance Justification</p>
-            <p className="text-slate-800">The total consumable cost of this case exceeded the package ceiling limit by <span className="font-bold">{formatRupees(procedure.totalCost - (procedure.pmjayCeilingAmount || 0))}</span>.</p>
+            <p className="text-slate-800">The total consumable cost of this case exceeded the package ceiling limit by <span className="font-bold">{procedure.pmjayCeilingAmount === 0 ? 'N/A' : formatRupees(procedure.totalCost - (procedure.pmjayCeilingAmount || 0))}</span>.</p>
             <p className="text-slate-900 italic font-serif mt-1">
               " {procedure.overCeilingReason} "
             </p>

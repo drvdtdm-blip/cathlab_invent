@@ -486,7 +486,7 @@ export const NewCase: React.FC<NewCaseProps> = ({ onSuccess }) => {
                   <option value="">General Billing (No Package Cap)</option>
                   {pmjayPackages.map(pkg => (
                     <option key={pkg.id} value={pkg.id}>
-                      {pkg.code} - {pkg.name} ({formatRupees(pkg.ceilingAmount)})
+                      {pkg.code} - {pkg.name} ({pkg.ceilingAmount === 0 ? 'Stratification Required / Custom Quote' : formatRupees(pkg.ceilingAmount)})
                     </option>
                   ))}
                 </select>
@@ -520,7 +520,9 @@ export const NewCase: React.FC<NewCaseProps> = ({ onSuccess }) => {
                 <div className="grid grid-cols-3 gap-4 text-center font-mono py-2 bg-white/70 rounded-lg border border-slate-100">
                   <div>
                     <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Ceiling Limit</span>
-                    <span className="text-sm font-bold text-slate-800">{formatRupees(ceilingAmount)}</span>
+                    <span className="text-sm font-bold text-slate-800">
+                      {ceilingAmount === 0 ? 'Custom Quote' : formatRupees(ceilingAmount)}
+                    </span>
                   </div>
                   <div>
                     <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Current Cost</span>
@@ -531,7 +533,7 @@ export const NewCase: React.FC<NewCaseProps> = ({ onSuccess }) => {
                   <div>
                     <span className="block text-[10px] text-slate-400 font-bold uppercase tracking-wider">Variance</span>
                     <span className={`text-sm font-bold ${overCeiling ? 'text-rose-700' : 'text-emerald-700'}`}>
-                      {overCeiling ? `-${formatRupees(Math.abs(variance))}` : `+${formatRupees(variance)}`}
+                      {ceilingAmount === 0 ? 'N/A' : (overCeiling ? `-${formatRupees(Math.abs(variance))}` : `+${formatRupees(variance)}`)}
                     </span>
                   </div>
                 </div>
