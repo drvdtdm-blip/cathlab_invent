@@ -41,19 +41,19 @@ export const resetDatabase = async () => {
       {
         code: "MC011A",
         name: "PTCA with 1 Stent",
-        ceilingAmount: 35834,
+        ceilingAmount: 67966,
         defaultConsumables: []
       },
       {
         code: "MC011B",
         name: "PTCA with 2 Stents",
-        ceilingAmount: 71668,
+        ceilingAmount: 103800,
         defaultConsumables: []
       },
       {
         code: "MC011C",
         name: "PTCA with 3 Stents",
-        ceilingAmount: 107502,
+        ceilingAmount: 139634,
         defaultConsumables: []
       },
       {
