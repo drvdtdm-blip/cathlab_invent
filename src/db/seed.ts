@@ -1,6 +1,6 @@
 import { db, type PmjayPackage } from './db';
 
-// Seed the cardiology packages matrix based on approved prices
+// Seed the cardiology packages matrix based on approved prices (including 15% NABH inflation)
 export const resetDatabase = async () => {
   // Clear all tables for a clean slate
   await db.transaction('rw', [db.items, db.ledger, db.pmjayPackages, db.procedures, db.requisitions], async () => {
@@ -11,87 +11,87 @@ export const resetDatabase = async () => {
     await db.requisitions.clear();
 
     const seedPackages: Omit<PmjayPackage, 'id'>[] = [
-      // 1. Pacemaker Implantation Packages
+      // 1. Pacemaker Implantation Packages (with 15% NABH markup)
       {
         code: "MC014",
         name: "Temporary Pacemaker implantation",
-        ceilingAmount: 19200,
+        ceilingAmount: 22080,
         defaultConsumables: []
       },
       {
         code: "MC015",
         name: "Permanent Pacemaker Implantation - Single Chamber",
-        ceilingAmount: 24500,
+        ceilingAmount: 28175,
         defaultConsumables: []
       },
       {
         code: "MC016",
         name: "Permanent Pacemaker Implantation - Double Chamber",
-        ceilingAmount: 33000,
+        ceilingAmount: 37950,
         defaultConsumables: []
       },
 
-      // 2. Interventional & Device Closure Packages
+      // 2. Interventional & Device Closure Packages (with 15% NABH markup)
       {
         code: "MC011",
         name: "PTCA, inclusive of diagnostic angiogram",
-        ceilingAmount: 32132,
+        ceilingAmount: 36952,
         defaultConsumables: []
       },
       {
         code: "MC007",
         name: "ASD Device Closure",
-        ceilingAmount: 98900,
+        ceilingAmount: 113735,
         defaultConsumables: []
       },
       {
         code: "MC008",
         name: "VSD Device Closure",
-        ceilingAmount: 109900,
+        ceilingAmount: 126385,
         defaultConsumables: []
       },
       {
         code: "MC009",
         name: "PDA Device Closure",
-        ceilingAmount: 62600,
+        ceilingAmount: 71990,
         defaultConsumables: []
       },
       {
         code: "MC010",
         name: "PDA stenting",
-        ceilingAmount: 40260,
+        ceilingAmount: 46299,
         defaultConsumables: []
       },
       {
         code: "MC017",
         name: "Peripheral Angioplasty",
-        ceilingAmount: 55500,
+        ceilingAmount: 63825,
         defaultConsumables: []
       },
 
-      // 3. Catheterization & Balloon Dilatation Packages
+      // 3. Catheterization & Balloon Dilatation Packages (with 15% NABH markup)
       {
         code: "MC001A",
         name: "Right Heart Catheterization",
-        ceilingAmount: 10000,
+        ceilingAmount: 11500,
         defaultConsumables: []
       },
       {
         code: "MC001B",
         name: "Left Heart Catheterization",
-        ceilingAmount: 10000,
+        ceilingAmount: 11500,
         defaultConsumables: []
       },
       {
         code: "MC005",
         name: "Balloon Mitral Valvotomy",
-        ceilingAmount: 90700,
+        ceilingAmount: 104305,
         defaultConsumables: []
       },
       {
         code: "MC006",
         name: "Balloon Atrial Septostomy",
-        ceilingAmount: 24400,
+        ceilingAmount: 28060,
         defaultConsumables: []
       },
       {
