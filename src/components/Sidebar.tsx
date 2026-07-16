@@ -41,16 +41,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange, use
     { id: 'settings', name: 'Settings', icon: Settings },
   ];
 
-  const allowedItems = navItems.filter(item => {
-    if (userRole === 'admin') return true;
-    if (userRole === 'inventory') {
-      return ['dashboard', 'inventory', 'requisitions'].includes(item.id);
-    }
-    if (userRole === 'clinical') {
-      return ['dashboard', 'new-case', 'reports'].includes(item.id);
-    }
-    return false;
-  });
+  const allowedItems = navItems; // Temporary bypass: show all tabs to everyone
+  if (userRole) { /* keep prop active for future RBAC toggling */ }
 
   return (
     <aside className="w-64 bg-slate-900 text-white min-h-screen flex flex-col justify-between border-r border-slate-800 no-print">

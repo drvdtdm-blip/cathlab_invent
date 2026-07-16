@@ -97,16 +97,8 @@ function App() {
 
   const userRole = session?.user?.user_metadata?.role || 'clinical';
 
-  const isAllowed = (view: string) => {
-    if (view === 'landing') return true;
-    if (userRole === 'admin') return true;
-    if (userRole === 'inventory') {
-      return ['dashboard', 'inventory', 'requisitions'].includes(view);
-    }
-    if (userRole === 'clinical') {
-      return ['dashboard', 'new-case', 'reports'].includes(view);
-    }
-    return false;
+  const isAllowed = (_view: string) => {
+    return true; // Temporary bypass: allow access to all views for everyone
   };
 
   if (sessionLoading) {
