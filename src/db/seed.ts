@@ -4,11 +4,11 @@ import { db, type PmjayPackage } from './db';
 export const resetDatabase = async () => {
   // Clear all tables for a clean slate
   await db.transaction('rw', [db.items, db.ledger, db.pmjayPackages, db.procedures, db.requisitions], async () => {
-    await db.items.clear();
     await db.ledger.clear();
-    await db.pmjayPackages.clear();
     await db.procedures.clear();
     await db.requisitions.clear();
+    await db.items.clear();
+    await db.pmjayPackages.clear();
 
     const seedPackages: Omit<PmjayPackage, 'id'>[] = [
       // 1. Pacemaker Implantation Packages
