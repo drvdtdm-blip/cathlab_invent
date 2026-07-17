@@ -12,6 +12,7 @@ import {
 export const Inventory: React.FC = () => {
   // Queries
   const { data: items = [], refetch: refetchItems } = useSupabaseTable<Item>('items');
+  const { data: ledgerEntries = [], refetch: refetchLedger } = useSupabaseTable<LedgerEntry>('ledger');
   
   // States
   const [searchTerm, setSearchTerm] = useState('');
@@ -154,6 +155,7 @@ export const Inventory: React.FC = () => {
 
       // Refetch
       await refetchItems();
+      await refetchLedger();
 
       // Reset & Close
       setNewItem({
@@ -231,6 +233,7 @@ export const Inventory: React.FC = () => {
 
       // Refetch inventory items list
       await refetchItems();
+      await refetchLedger();
 
       // If the ledger history drawer is currently open for this item, refresh its logs instantly
       if (selectedItemForHistory && selectedItemForHistory.id === selectedItemForAdjust.id) {
@@ -380,6 +383,7 @@ export const Inventory: React.FC = () => {
                 <th className="py-3 px-4">Batch/Lot No</th>
                 <th className="py-3 px-4">Expiry Date</th>
                 <th className="py-3 px-4 text-center">Stock</th>
+                <th className="py-3 px-4 text-center">Last Modified</th>
                 <th className="py-3 px-4 text-right">Cost</th>
                 <th className="py-3 px-4 text-center no-print">Actions</th>
               </tr>
@@ -387,7 +391,7 @@ export const Inventory: React.FC = () => {
             <tbody className="divide-y divide-slate-100 font-medium">
               {filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="text-center py-12 text-slate-400 text-sm">
+                  <td colSpan={10} className="text-center py-12 text-slate-400 text-sm">
                     No items match the chosen filters.
                   </td>
                 </tr>
@@ -395,7 +399,23 @@ export const Inventory: React.FC = () => {
                 filteredItems.map((item) => {
                   const isLow = item.currentQuantity <= item.reorderLevel;
                   const expiryBadge = getExpiryBadge(item.expiryDate);
+
+                  // Find latest ledger entry for this item to determine last modification timestamp
+                  const itemLogs = ledgerEntries.filter(log => log.itemId === item.id);
+                  const latestLog = itemLogs.length > 0
+                    ? itemLogs.reduce((prev, curr) => (prev.timestamp > curr.timestamp ? prev : curr))
+                    : null;
                   
+                  const lastModifiedDate = latestLog
+                    ? new Date(latestLog.timestamp).toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })
+                    : 'Initial Seed';
+
                   return (
                     <tr key={item.id} className={`hover:bg-slate-50/50 ${isLow ? 'bg-amber-50/15' : ''}`}>
                       <td className="py-3.5 px-4">
@@ -428,6 +448,9 @@ export const Inventory: React.FC = () => {
                             </span>
                           )}
                         </div>
+                      </td>
+                      <td className="py-3.5 px-4 text-center text-slate-550 font-mono text-[10px] whitespace-nowrap">
+                        {lastModifiedDate}
                       </td>
                       <td className="py-3.5 px-4 text-right font-mono text-slate-905 font-bold">
                         {formatRupees(item.unitCost)}
