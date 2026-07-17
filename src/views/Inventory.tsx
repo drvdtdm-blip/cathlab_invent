@@ -11,7 +11,7 @@ import {
 
 export const Inventory: React.FC = () => {
   // Queries
-  const { data: items = [] } = useSupabaseTable<Item>('items');
+  const { data: items = [], refetch: refetchItems } = useSupabaseTable<Item>('items');
   
   // States
   const [searchTerm, setSearchTerm] = useState('');
@@ -152,6 +152,9 @@ export const Inventory: React.FC = () => {
         await db.ledger.add(ledger);
       });
 
+      // Refetch
+      await refetchItems();
+
       // Reset & Close
       setNewItem({
         name: '',
@@ -225,6 +228,14 @@ export const Inventory: React.FC = () => {
 
         await db.ledger.add(ledger);
       });
+
+      // Refetch inventory items list
+      await refetchItems();
+
+      // If the ledger history drawer is currently open for this item, refresh its logs instantly
+      if (selectedItemForHistory && selectedItemForHistory.id === selectedItemForAdjust.id) {
+        await openHistoryDrawer(selectedItemForHistory);
+      }
 
       setIsAdjustModalOpen(false);
       setSelectedItemForAdjust(null);

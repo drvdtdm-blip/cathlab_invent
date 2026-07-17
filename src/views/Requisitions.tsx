@@ -15,8 +15,8 @@ import {
 
 export const Requisitions: React.FC = () => {
   // Queries
-  const { data: requisitions = [] } = useSupabaseTable<Requisition>('requisitions');
-  const { data: allItems = [] } = useSupabaseTable<Item>('items');
+  const { data: requisitions = [], refetch: refetchRequisitions } = useSupabaseTable<Requisition>('requisitions');
+  const { data: allItems = [], refetch: refetchItems } = useSupabaseTable<Item>('items');
 
   // Navigation states
   const [selectedReq, setSelectedReq] = useState<Requisition | null>(null);
@@ -74,6 +74,7 @@ export const Requisitions: React.FC = () => {
 
     try {
       const id = await db.requisitions.add(newReq);
+      await refetchRequisitions();
       const saved = await db.requisitions.get(id);
       if (saved) {
         setSelectedReq(saved);
@@ -97,6 +98,7 @@ export const Requisitions: React.FC = () => {
 
     try {
       const id = await db.requisitions.add(newReq);
+      await refetchRequisitions();
       const saved = await db.requisitions.get(id);
       if (saved) {
         setSelectedReq(saved);
@@ -159,6 +161,7 @@ export const Requisitions: React.FC = () => {
     if (!selectedReq || !selectedReq.id) return;
     try {
       await db.requisitions.put(selectedReq);
+      await refetchRequisitions();
       alert("Requisition draft saved successfully.");
       setIsEditing(false);
     } catch (err) {
@@ -188,6 +191,7 @@ export const Requisitions: React.FC = () => {
         status: 'submitted'
       };
       await db.requisitions.put(updatedReq);
+      await refetchRequisitions();
       setSelectedReq(updatedReq);
       setIsEditing(false);
       alert("Requisition submitted successfully! You can now print the letterhead report.");
@@ -203,6 +207,7 @@ export const Requisitions: React.FC = () => {
 
     try {
       await db.requisitions.delete(reqId);
+      await refetchRequisitions();
       setSelectedReq(null);
       setIsEditing(false);
     } catch (err) {
@@ -253,6 +258,10 @@ export const Requisitions: React.FC = () => {
         await db.requisitions.put(receivedReq);
         setSelectedReq(receivedReq);
       });
+
+      // Refetch requisitions and item stock levels immediately
+      await refetchRequisitions();
+      await refetchItems();
 
       setIsReceiveModalOpen(false);
       setReceivingOperator('');

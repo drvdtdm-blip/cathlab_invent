@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../db/supabaseClient';
 
 export function useSupabaseTable<T>(tableName: string) {
@@ -6,39 +6,31 @@ export function useSupabaseTable<T>(tableName: string) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
 
-  useEffect(() => {
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-    const isDummy = supabaseUrl.includes('your-project-id') || !supabaseUrl;
+  const fetchData = useCallback(async () => {
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+      const isDummy = supabaseUrl.includes('your-project-id') || !supabaseUrl;
 
-    if (isDummy) {
-      setData([]);
-      setLoading(false);
-      return;
-    }
-
-    let active = true;
-
-    async function fetchData() {
-      try {
-        const { data: res, error: err } = await supabase
-          .from(tableName)
-          .select('*');
-        if (err) throw err;
-        if (active) {
-          setData((res as T[]) || []);
-        }
-      } catch (err) {
-        if (active) {
-          setError(err);
-          console.error(`Error fetching table ${tableName}:`, err);
-        }
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
+      if (isDummy) {
+        setData([]);
+        setLoading(false);
+        return;
       }
-    }
 
+      const { data: res, error: err } = await supabase
+        .from(tableName)
+        .select('*');
+      if (err) throw err;
+      setData((res as T[]) || []);
+    } catch (err) {
+      setError(err);
+      console.error(`Error fetching table ${tableName}:`, err);
+    } finally {
+      setLoading(false);
+    }
+  }, [tableName]);
+
+  useEffect(() => {
     fetchData();
 
     // Subscribe to realtime changes safely
@@ -59,7 +51,6 @@ export function useSupabaseTable<T>(tableName: string) {
     }
 
     return () => {
-      active = false;
       if (channel) {
         try {
           supabase.removeChannel(channel);
@@ -68,7 +59,7 @@ export function useSupabaseTable<T>(tableName: string) {
         }
       }
     };
-  }, [tableName]);
+  }, [tableName, fetchData]);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch: fetchData };
 }
