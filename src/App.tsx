@@ -6,32 +6,32 @@ import { NewCase } from './views/NewCase';
 import { Requisitions } from './views/Requisitions';
 import { Reports } from './views/Reports';
 import { Settings } from './views/Settings';
-import { LandingPage } from './views/LandingPage';
-import { Login } from './components/Login';
+// Bypassed/Removed login and landing views
 import { db } from './db/db';
 import { resetDatabase } from './db/seed';
-import { supabase } from './db/supabaseClient';
 
 function App() {
-  const [session, setSession] = useState<any>(null);
-  const [sessionLoading, setSessionLoading] = useState(true);
-  const [currentView, setCurrentView] = useState<string>('landing');
+  // Bypassed/Mocked Session for offline clinical environment
+  const [session, setSession] = useState<any>({ 
+    user: { 
+      email: 'cardiologist@ssmc.com', 
+      user_metadata: { role: 'admin' } 
+    } 
+  });
+  const [sessionLoading, setSessionLoading] = useState(false);
+  const [currentView, setCurrentView] = useState<string>('dashboard');
   const [dbInitialized, setDbInitialized] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0); // to force reload views when db resets
 
-  // Auth Session check
+  // Auth Session check bypassed
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }: any) => {
-      setSession(session);
-      setSessionLoading(false);
+    setSession({ 
+      user: { 
+        email: 'cardiologist@ssmc.com', 
+        user_metadata: { role: 'admin' } 
+      } 
     });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
-      setSession(session);
-      setSessionLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    setSessionLoading(false);
   }, []);
 
   // Startup Database Seeding Check
@@ -110,10 +110,6 @@ function App() {
     );
   }
 
-  if (!session) {
-    return <Login />;
-  }
-
   if (!dbInitialized) {
     return (
       <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white">
@@ -121,10 +117,6 @@ function App() {
         <p className="mt-4 text-sm font-semibold tracking-wide text-slate-400 font-sans">Initializing Database Schema...</p>
       </div>
     );
-  }
-
-  if (currentView === 'landing') {
-    return <LandingPage onEnter={() => setCurrentView('dashboard')} />;
   }
 
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
