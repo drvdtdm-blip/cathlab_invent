@@ -42,8 +42,9 @@ export const Dashboard: React.FC<DashboardProps> = ({ onViewChange }) => {
   const nowEpoch = Date.now();
   const thirtyDaysLimit = nowEpoch + 30 * 24 * 60 * 60 * 1000;
   const expiringSoon = items.filter(i => {
+    if (!i.expiryDate || i.expiryDate === 'Not Received') return false;
     const expEpoch = new Date(i.expiryDate).getTime();
-    return expEpoch <= thirtyDaysLimit;
+    return !isNaN(expEpoch) && expEpoch <= thirtyDaysLimit;
   }).length;
 
   // 4. Cases this month

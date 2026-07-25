@@ -120,7 +120,21 @@ export const Reports: React.FC = () => {
   const getExpiryData = () => {
     const now = Date.now();
     return items.map(item => {
+      if (!item.expiryDate || item.expiryDate === 'Not Received') {
+        return {
+          ...item,
+          daysToExpiry: 9999,
+          status: 'safe' as const
+        };
+      }
       const exp = new Date(item.expiryDate).getTime();
+      if (isNaN(exp)) {
+        return {
+          ...item,
+          daysToExpiry: 9999,
+          status: 'safe' as const
+        };
+      }
       const diffDays = Math.ceil((exp - now) / (1000 * 60 * 60 * 24));
       
       let status: 'expired' | '30' | '60' | '90' | 'safe' = 'safe';

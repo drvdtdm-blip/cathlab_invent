@@ -61,8 +61,14 @@ export const Inventory: React.FC = () => {
 
   // Expiry check helper
   const getExpiryBadge = (dateStr: string) => {
+    if (!dateStr || dateStr === 'Not Received') {
+      return { label: 'Pre-arrival (No Stock)', style: 'bg-slate-50 text-slate-400 border-slate-200 border-dashed font-medium' };
+    }
     const now = Date.now();
     const exp = new Date(dateStr).getTime();
+    if (isNaN(exp)) {
+      return { label: 'Pre-arrival (No Stock)', style: 'bg-slate-50 text-slate-400 border-slate-200 border-dashed font-medium' };
+    }
     const diffDays = Math.ceil((exp - now) / (1000 * 60 * 60 * 24));
     
     if (diffDays < 0) {
@@ -114,8 +120,8 @@ export const Inventory: React.FC = () => {
   // Handle Add Item
   const handleAddItem = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newItem.name || !newItem.batchLotNo || !newItem.expiryDate) {
-      alert("Please fill in all required fields.");
+    if (!newItem.name) {
+      alert("Please fill in the item name.");
       return;
     }
 
@@ -126,11 +132,11 @@ export const Inventory: React.FC = () => {
           category: newItem.category,
           manufacturer: newItem.manufacturer,
           modelSize: newItem.modelSize,
-          batchLotNo: newItem.batchLotNo,
-          expiryDate: newItem.expiryDate,
-          unitCost: Number(newItem.unitCost),
-          currentQuantity: Number(newItem.currentQuantity),
-          reorderLevel: Number(newItem.reorderLevel),
+          batchLotNo: newItem.batchLotNo || 'Not Received',
+          expiryDate: newItem.expiryDate || '',
+          unitCost: Number(newItem.unitCost) || 0,
+          currentQuantity: Number(newItem.currentQuantity) || 0,
+          reorderLevel: Number(newItem.reorderLevel) || 0,
           storageLocation: newItem.storageLocation
         };
 
@@ -541,11 +547,10 @@ export const Inventory: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Batch / Lot No *</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Batch / Lot No (Optional)</label>
                   <input
                     type="text"
-                    required
-                    placeholder="e.g. B-12938"
+                    placeholder="e.g. B-12938 (Leave blank if pre-arrival)"
                     value={newItem.batchLotNo}
                     onChange={(e) => setNewItem({ ...newItem, batchLotNo: e.target.value })}
                     className="w-full p-2 border border-slate-200 rounded-lg text-sm"
@@ -553,10 +558,9 @@ export const Inventory: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Expiry Date *</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Expiry Date (Optional)</label>
                   <input
                     type="date"
-                    required
                     value={newItem.expiryDate}
                     onChange={(e) => setNewItem({ ...newItem, expiryDate: e.target.value })}
                     className="w-full p-2 border border-slate-200 rounded-lg text-sm font-mono"
@@ -576,11 +580,11 @@ export const Inventory: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Initial Quantity *</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Initial Quantity (Optional)</label>
                   <input
                     type="number"
-                    required
                     min="0"
+                    placeholder="Defaults to 0"
                     value={newItem.currentQuantity || ''}
                     onChange={(e) => setNewItem({ ...newItem, currentQuantity: Number(e.target.value) })}
                     className="w-full p-2 border border-slate-200 rounded-lg text-sm font-mono"
