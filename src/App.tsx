@@ -45,19 +45,11 @@ function App() {
           localStorage.setItem('cathlab_consultants_reset_v2', 'true');
         }
 
-        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-        const isDummy = supabaseUrl.includes('your-project-id') || !supabaseUrl;
-
-        if (!isDummy) {
-          try {
-            const count = await db.pmjayPackages.count();
-            if (count === 0) {
-              console.log("Database is empty. Seeding default packages...");
-              await resetDatabase();
-            }
-          } catch (err) {
-            console.error("Failed to query packages count from Supabase:", err);
-          }
+        // Always check and seed local IndexedDB
+        const count = await db.pmjayPackages.count();
+        if (count === 0) {
+          console.log("Local database is empty. Seeding default items and packages...");
+          await resetDatabase();
         }
       } catch (err) {
         console.error("Error checking or seeding database:", err);
@@ -126,9 +118,6 @@ function App() {
     );
   }
 
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-  const isDummy = supabaseUrl.includes('your-project-id') || !supabaseUrl;
-
   return (
     <div className="min-h-screen flex bg-slate-50 text-slate-900">
       
@@ -142,12 +131,6 @@ function App() {
 
       {/* Main View Area */}
       <main className="flex-1 min-h-screen overflow-y-auto print:overflow-visible print:bg-white print:p-0 flex flex-col">
-        {isDummy && (
-          <div className="bg-amber-500 text-slate-950 px-4 py-2.5 text-xs font-bold text-center no-print shadow-xs flex items-center justify-center gap-2">
-            <span className="bg-amber-900 text-white px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase">Notice</span>
-            <span>Supabase is not configured yet. Please edit your <code>.env</code> file to add your <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code>.</span>
-          </div>
-        )}
         <div className="mx-auto w-full max-w-7xl print:max-w-full flex-1">
           {!isAllowed(currentView) ? (
             <div className="flex items-center justify-center min-h-[70vh] p-4 font-sans">

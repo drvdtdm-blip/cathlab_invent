@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+import Dexie, { type Table } from 'dexie';
 
 export interface Item {
   id?: number;
@@ -83,173 +83,23 @@ export interface Requisition {
   }[];
 }
 
-const isDummyMode = () => {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-  return supabaseUrl.includes('your-project-id') || !supabaseUrl;
-};
+export class CathLabInventoryDatabase extends Dexie {
+  items!: Table<Item>;
+  ledger!: Table<LedgerEntry>;
+  pmjayPackages!: Table<PmjayPackage>;
+  procedures!: Table<Procedure>;
+  requisitions!: Table<Requisition>;
 
-class SupabaseTableWrapper<T> {
-  tableName: string;
-  constructor(tableName: string) {
-    this.tableName = tableName;
-  }
-
-  async toArray(): Promise<T[]> {
-    if (isDummyMode()) return [];
-    const { data, error } = await supabase.from(this.tableName).select('*');
-    if (error) {
-      console.error(`Error in toArray for ${this.tableName}:`, error);
-      throw error;
-    }
-    return (data || []) as unknown as T[];
-  }
-
-  async count(): Promise<number> {
-    if (isDummyMode()) return 0;
-    const { count, error } = await supabase
-      .from(this.tableName)
-      .select('*', { count: 'exact', head: true });
-    if (error) {
-      console.error(`Error in count for ${this.tableName}:`, error);
-      throw error;
-    }
-    return count || 0;
-  }
-
-  async get(id: number | string): Promise<T | undefined> {
-    if (isDummyMode()) return undefined;
-    const { data, error } = await supabase
-      .from(this.tableName)
-      .select('*')
-      .eq('id', id)
-      .maybeSingle();
-    if (error) {
-      console.error(`Error in get for ${this.tableName} (id=${id}):`, error);
-      throw error;
-    }
-    return data as T | undefined;
-  }
-
-  async add(item: Omit<T, 'id'>): Promise<number> {
-    if (isDummyMode()) return 0;
-    // Clean out any undefined or null id values to prevent database issues
-    const payload = { ...item } as any;
-    delete payload.id;
-
-    const { data, error } = await supabase
-      .from(this.tableName)
-      .insert(payload)
-      .select()
-      .single();
-    if (error) {
-      console.error(`Error in add for ${this.tableName}:`, error, payload);
-      throw error;
-    }
-    return (data as any).id;
-  }
-
-  async put(item: T): Promise<number> {
-    if (isDummyMode()) return 0;
-    const { data, error } = await supabase
-      .from(this.tableName)
-      .upsert(item as any)
-      .select()
-      .single();
-    if (error) {
-      console.error(`Error in put for ${this.tableName}:`, error, item);
-      throw error;
-    }
-    return (data as any).id;
-  }
-
-  async delete(id: number | string): Promise<void> {
-    if (isDummyMode()) return;
-    const { error } = await supabase
-      .from(this.tableName)
-      .delete()
-      .eq('id', id);
-    if (error) {
-      console.error(`Error in delete for ${this.tableName} (id=${id}):`, error);
-      throw error;
-    }
-  }
-
-  async clear(): Promise<void> {
-    if (isDummyMode()) return;
-    const { error } = await supabase
-      .from(this.tableName)
-      .delete()
-      .neq('id', -1);
-    if (error) {
-      console.error(`Error in clear for ${this.tableName}:`, error);
-      throw error;
-    }
-  }
-
-  where(field: string) {
-    return {
-      equals: (val: any) => {
-        return {
-          reverse: () => {
-            return {
-              sortBy: async (sortField: string): Promise<T[]> => {
-                if (isDummyMode()) return [];
-                const { data, error } = await supabase
-                  .from(this.tableName)
-                  .select('*')
-                  .eq(field, val)
-                  .order(sortField, { ascending: false });
-                if (error) {
-                  console.error(`Error in where.equals.reverse.sortBy for ${this.tableName}:`, error);
-                  throw error;
-                }
-                return (data || []) as unknown as T[];
-              }
-            };
-          },
-          sortBy: async (sortField: string): Promise<T[]> => {
-            if (isDummyMode()) return [];
-            const { data, error } = await supabase
-              .from(this.tableName)
-              .select('*')
-              .eq(field, val)
-              .order(sortField, { ascending: true });
-            if (error) {
-              console.error(`Error in where.equals.sortBy for ${this.tableName}:`, error);
-              throw error;
-            }
-            return (data || []) as unknown as T[];
-          },
-          toArray: async (): Promise<T[]> => {
-            if (isDummyMode()) return [];
-            const { data, error } = await supabase
-              .from(this.tableName)
-              .select('*')
-              .eq(field, val);
-            if (error) {
-              console.error(`Error in where.equals.toArray for ${this.tableName}:`, error);
-              throw error;
-            }
-            return (data || []) as unknown as T[];
-          }
-        };
-      }
-    };
+  constructor() {
+    super('CathLabInventoryDB');
+    this.version(1).stores({
+      items: '++id, name, category, expiryDate, currentQuantity',
+      ledger: '++id, itemId, timestamp, type, operator, referenceId',
+      pmjayPackages: '++id, code, name',
+      procedures: '++id, caseId, date, patientRef, procedureType, operator, pmjayPackageId, overCeiling',
+      requisitions: '++id, requisitionNo, date, status, type, operator',
+    });
   }
 }
 
-export const db = {
-  items: new SupabaseTableWrapper<Item>('items'),
-  ledger: new SupabaseTableWrapper<LedgerEntry>('ledger'),
-  pmjayPackages: new SupabaseTableWrapper<PmjayPackage>('pmjay_packages'),
-  procedures: new SupabaseTableWrapper<Procedure>('procedures'),
-  requisitions: new SupabaseTableWrapper<Requisition>('requisitions'),
-
-  async transaction(
-    _mode: string,
-    _tables: any[],
-    callback: () => Promise<any>
-  ): Promise<any> {
-    return callback();
-  }
-};
+export const db = new CathLabInventoryDatabase();

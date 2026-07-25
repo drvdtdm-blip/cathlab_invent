@@ -121,8 +121,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange, use
         <div className="flex items-center gap-3 text-xs text-slate-400">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
           <div>
-            <p className="font-semibold text-slate-300">Supabase Cloud</p>
-            <p className="text-[10px] text-slate-550">Realtime Sync Active</p>
+            <p className="font-semibold text-slate-300">Local Database</p>
+            <p className="text-[10px] text-slate-500">Offline Storage Active</p>
           </div>
         </div>
         <div className="pt-2 border-t border-slate-800/80 text-[10px] text-slate-450 font-bold tracking-wider uppercase text-center">
