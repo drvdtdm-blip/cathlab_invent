@@ -135,9 +135,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
           </div>
           <div className="grid grid-cols-1 gap-2">
             {[
-              { label: 'Cardiologist (Admin)', email: 'cardiologist@ssmc.com', pass: 'ssmcadmin' },
-              { label: 'Inventory Registrar', email: 'inventory@ssmc.com', pass: 'ssmcinventory' },
-              { label: 'Clinical Ops Desk', email: 'clinical@ssmc.com', pass: 'ssmcclinical' }
+              { label: 'Cardiologist (Admin)', email: 'cardiologist@ssmc.com', pass: 'ssmc' }
             ].map(user => (
               <button
                 key={user.email}
@@ -156,7 +154,7 @@ export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
                 </div>
                 <div className="text-right flex flex-col items-end">
                   <span className="text-[10px] font-mono text-slate-400 font-bold">pass: {user.pass}</span>
-                  <span className="text-[9px] uppercase tracking-wider text-slate-500 mt-0.5">Click to Fill</span>
+                  <span className="text-[9px] uppercase tracking-wider text-slate-550 mt-0.5 group-hover:text-slate-300">Click to Fill</span>
                 </div>
               </button>
             ))}

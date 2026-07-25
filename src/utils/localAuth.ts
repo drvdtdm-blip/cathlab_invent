@@ -8,28 +8,16 @@ export interface LocalUser {
 const DEFAULT_USERS = [
   {
     email: 'cardiologist@ssmc.com',
-    password: 'ssmcadmin',
+    password: 'ssmc',
     role: 'admin' as const,
     name: 'Dr. V.D. Tripathi'
-  },
-  {
-    email: 'inventory@ssmc.com',
-    password: 'ssmcinventory',
-    role: 'inventory' as const,
-    name: 'Inventory Registrar'
-  },
-  {
-    email: 'clinical@ssmc.com',
-    password: 'ssmcclinical',
-    role: 'clinical' as const,
-    name: 'Clinical Operations Desk'
   }
 ];
 
 // Initialize users table in localStorage if empty
 export const initializeLocalUsers = () => {
-  if (!localStorage.getItem('cathlab_local_users')) {
-    localStorage.setItem('cathlab_local_users', JSON.stringify(DEFAULT_USERS));
+  if (!localStorage.getItem('cathlab_local_users_v3')) {
+    localStorage.setItem('cathlab_local_users_v3', JSON.stringify(DEFAULT_USERS));
   }
 };
 
@@ -40,7 +28,7 @@ export const verifyLocalCredentials = async (email: string, password: string): P
   // Simulate network delay for realistic visual loading experience
   await new Promise(resolve => setTimeout(resolve, 800));
 
-  const usersJson = localStorage.getItem('cathlab_local_users');
+  const usersJson = localStorage.getItem('cathlab_local_users_v3');
   if (!usersJson) {
     throw new Error('User registry not initialized.');
   }
@@ -68,7 +56,7 @@ export const verifyLocalCredentials = async (email: string, password: string): P
 // Update local user password in localStorage
 export const updateLocalPassword = (email: string, oldPassword: string, newPassword: string): boolean => {
   initializeLocalUsers();
-  const usersJson = localStorage.getItem('cathlab_local_users');
+  const usersJson = localStorage.getItem('cathlab_local_users_v3');
   if (!usersJson) return false;
 
   const users = JSON.parse(usersJson);
@@ -78,6 +66,6 @@ export const updateLocalPassword = (email: string, oldPassword: string, newPassw
   if (users[userIndex].password !== oldPassword) return false;
 
   users[userIndex].password = newPassword;
-  localStorage.setItem('cathlab_local_users', JSON.stringify(users));
+  localStorage.setItem('cathlab_local_users_v3', JSON.stringify(users));
   return true;
 };
