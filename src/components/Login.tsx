@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { supabase } from '../db/supabaseClient';
+import { verifyLocalCredentials } from '../utils/localAuth';
 import { Lock, Mail, Activity, Eye, EyeOff } from 'lucide-react';
 
-export const Login: React.FC = () => {
+interface LoginProps {
+  onLoginSuccess: (session: any) => void;
+}
+
+export const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -20,14 +24,19 @@ export const Login: React.FC = () => {
     setError('');
 
     try {
-      const { error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (authError) {
-        setError(authError.message);
-      }
+      const userSession = await verifyLocalCredentials(email, password);
+      const sessionObj = {
+        user: {
+          email: userSession.email,
+          user_metadata: {
+            role: userSession.role,
+            name: userSession.name
+          }
+        }
+      };
+      // Persist the local network session in localStorage
+      localStorage.setItem('cathlab_local_session', JSON.stringify(sessionObj));
+      onLoginSuccess(sessionObj);
     } catch (err: any) {
       setError(err?.message || 'An unexpected error occurred. Please try again.');
     } finally {
@@ -118,7 +127,43 @@ export const Login: React.FC = () => {
           </button>
         </form>
 
-        <div className="pt-4 border-t border-slate-800 text-center text-[10px] text-slate-500 leading-relaxed uppercase tracking-wider font-semibold">
+        {/* Local Demo / Default Accounts Credentials */}
+        <div className="pt-4 border-t border-slate-800 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest text-left">Local Network User Access</h3>
+            <span className="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-bold uppercase tracking-wider">Offline Mode</span>
+          </div>
+          <div className="grid grid-cols-1 gap-2">
+            {[
+              { label: 'Cardiologist (Admin)', email: 'cardiologist@ssmc.com', pass: 'ssmcadmin' },
+              { label: 'Inventory Registrar', email: 'inventory@ssmc.com', pass: 'ssmcinventory' },
+              { label: 'Clinical Ops Desk', email: 'clinical@ssmc.com', pass: 'ssmcclinical' }
+            ].map(user => (
+              <button
+                key={user.email}
+                type="button"
+                onClick={() => {
+                  setEmail(user.email);
+                  setPassword(user.pass);
+                }}
+                className="w-full text-left p-2.5 bg-slate-950/40 hover:bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl flex items-center justify-between transition-all group text-xs text-slate-300"
+              >
+                <div>
+                  <div className="font-bold text-[11px] text-white flex items-center gap-1.5">
+                    {user.label}
+                  </div>
+                  <div className="text-[10px] text-slate-500 font-mono mt-0.5">{user.email}</div>
+                </div>
+                <div className="text-right flex flex-col items-end">
+                  <span className="text-[10px] font-mono text-slate-400 font-bold">pass: {user.pass}</span>
+                  <span className="text-[9px] uppercase tracking-wider text-slate-500 mt-0.5">Click to Fill</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="pt-2 border-t border-slate-800/60 text-center text-[10px] text-slate-500 leading-relaxed uppercase tracking-wider font-semibold">
           Authorized Medical Personnel Only
         </div>
       </div>

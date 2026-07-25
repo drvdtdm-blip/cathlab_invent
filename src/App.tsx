@@ -6,32 +6,29 @@ import { NewCase } from './views/NewCase';
 import { Requisitions } from './views/Requisitions';
 import { Reports } from './views/Reports';
 import { Settings } from './views/Settings';
-// Bypassed/Removed login and landing views
+import { LandingPage } from './views/LandingPage';
+import { Login } from './components/Login';
 import { db } from './db/db';
 import { resetDatabase } from './db/seed';
+import { initializeLocalUsers } from './utils/localAuth';
 
 function App() {
-  // Bypassed/Mocked Session for offline clinical environment
-  const [session, setSession] = useState<any>({ 
-    user: { 
-      email: 'cardiologist@ssmc.com', 
-      user_metadata: { role: 'admin' } 
-    } 
+  // Read initial session from localStorage
+  const [session, setSession] = useState<any>(() => {
+    const saved = localStorage.getItem('cathlab_local_session');
+    return saved ? JSON.parse(saved) : null;
   });
-  const [sessionLoading, setSessionLoading] = useState(false);
-  const [currentView, setCurrentView] = useState<string>('dashboard');
+
+  const [currentView, setCurrentView] = useState<string>(() => {
+    const saved = localStorage.getItem('cathlab_local_session');
+    return saved ? 'dashboard' : 'landing';
+  });
   const [dbInitialized, setDbInitialized] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0); // to force reload views when db resets
 
-  // Auth Session check bypassed
+  // Initialize local users db on mount
   useEffect(() => {
-    setSession({ 
-      user: { 
-        email: 'cardiologist@ssmc.com', 
-        user_metadata: { role: 'admin' } 
-      } 
-    });
-    setSessionLoading(false);
+    initializeLocalUsers();
   }, []);
 
   // Startup Database Seeding Check
@@ -76,6 +73,12 @@ function App() {
     setCurrentView('dashboard');
   };
 
+  const handleSignOut = () => {
+    localStorage.removeItem('cathlab_local_session');
+    setSession(null);
+    setCurrentView('landing');
+  };
+
   const renderActiveView = () => {
     switch (currentView) {
       case 'dashboard':
@@ -101,13 +104,17 @@ function App() {
     return true; // Temporary bypass: allow access to all views for everyone
   };
 
-  if (sessionLoading) {
-    return (
-      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center text-white">
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-sm font-semibold tracking-wide text-slate-400 font-sans">Checking Session Credentials...</p>
-      </div>
-    );
+
+
+  // Render Landing Page or Login page if user has no session
+  if (!session) {
+    if (currentView === 'landing') {
+      return <LandingPage onEnter={() => setCurrentView('login')} />;
+    }
+    return <Login onLoginSuccess={(userSession) => {
+      setSession(userSession);
+      setCurrentView('dashboard');
+    }} />;
   }
 
   if (!dbInitialized) {
@@ -126,7 +133,12 @@ function App() {
     <div className="min-h-screen flex bg-slate-50 text-slate-900">
       
       {/* Navigation Sidebar - Hidden on browser print */}
-      <Sidebar currentView={currentView} onViewChange={setCurrentView} userRole={userRole} />
+      <Sidebar 
+        currentView={currentView} 
+        onViewChange={setCurrentView} 
+        userRole={userRole} 
+        onSignOut={handleSignOut} 
+      />
 
       {/* Main View Area */}
       <main className="flex-1 min-h-screen overflow-y-auto print:overflow-visible print:bg-white print:p-0 flex flex-col">

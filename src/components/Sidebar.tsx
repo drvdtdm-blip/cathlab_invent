@@ -7,16 +7,18 @@ import {
   FilePlus, 
   FileText, 
   BarChart3, 
-  Settings
+  Settings,
+  LogOut
 } from 'lucide-react';
 
 interface SidebarProps {
   currentView: string;
   onViewChange: (view: string) => void;
   userRole: 'admin' | 'inventory' | 'clinical';
+  onSignOut: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange, userRole }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange, userRole, onSignOut }) => {
   const { data: items = [] } = useSupabaseTable<Item>('items');
 
   // Query low-stock count reactively
@@ -102,7 +104,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange, use
           })}
         </nav>
         
-        {/* Sign Out Button Removed for direct access mode */}
+        {/* Sign Out Button */}
+        <div className="p-4 border-t border-slate-800/40">
+          <button
+            onClick={onSignOut}
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-all duration-150 cursor-pointer"
+          >
+            <LogOut className="w-4 h-4 text-slate-450" />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </div>
 
       {/* Footer Info */}
