@@ -30,6 +30,27 @@ export const Settings: React.FC<SettingsProps> = ({ onResetSuccess }) => {
 
   // Reset database handler
   const handleResetDb = async () => {
+    const password = window.prompt("Enter authorization password to reset database:");
+    if (password === null) return; // user cancelled
+
+    // Retrieve active cardiologist password from localStorage (default to 'ssmc')
+    const usersJson = localStorage.getItem('cathlab_local_users_v3');
+    let correctPassword = 'ssmc';
+    if (usersJson) {
+      try {
+        const users = JSON.parse(usersJson);
+        const admin = users.find((u: any) => u.role === 'admin' || u.email === 'cardiologist@ssmc.com');
+        if (admin) correctPassword = admin.password;
+      } catch (e) {
+        console.error("Error parsing local users:", e);
+      }
+    }
+
+    if (password !== correctPassword) {
+      alert("Incorrect authorization password. Database reset aborted.");
+      return;
+    }
+
     const confirmReset = window.confirm(
       "WARNING: This will delete ALL logged cases, requisitions, manually added inventory items, and custom package modifications. It will restore the default seed data. Do you want to proceed?"
     );
