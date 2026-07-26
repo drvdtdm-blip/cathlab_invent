@@ -1,4 +1,4 @@
-﻿import { db, type Item, type PmjayPackage, type LedgerEntry } from './db';
+import { db, type Item, type PmjayPackage, type LedgerEntry } from './db';
 
 // Realistic Cath Lab Items Seed Data
 const seedItems: Omit<Item, 'id'>[] = [
@@ -304,10 +304,51 @@ export const resetDatabase = async () => {
 
     // 3. Insert PMJAY packages
     const seedPackages: Omit<PmjayPackage, 'id'>[] = [
+      // 1. Pacemaker Implantation Packages (with 15% NABH markup)
+      {
+        code: "MC014",
+        name: "Temporary Pacemaker implantation (TPI)",
+        ceilingAmount: 22080,
+        defaultConsumables: []
+      },
+      {
+        code: "MC015",
+        name: "Permanent Pacemaker Implantation - Single Chamber (PPI)",
+        ceilingAmount: 28175,
+        defaultConsumables: [
+          { itemId: getIt("Radifocus Introducer II Sheath", "5F 11cm"), quantity: 1 },
+          { itemId: getIt("Assurity MRI Single Chamber Pacemaker", "PM1272 (Single Chamber)"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 }
+        ]
+      },
+      {
+        code: "MC016",
+        name: "Permanent Pacemaker Implantation - Double Chamber (PPI)",
+        ceilingAmount: 37950,
+        defaultConsumables: [
+          { itemId: getIt("Radifocus Introducer II Sheath", "5F 11cm"), quantity: 1 },
+          { itemId: getIt("Adapta Dual Chamber Pacemaker", "ADDR01 (Dual Chamber)"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 }
+        ]
+      },
+
+      // 2. Interventional & Device Closure Packages (with 15% NABH markup)
+      {
+        code: "MC011",
+        name: "PTCA, inclusive of diagnostic angiogram (PCI)",
+        ceilingAmount: 32132,
+        defaultConsumables: [
+          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
+          { itemId: getIt("Launcher Guide Catheter", "JL4 6F"), quantity: 1 },
+          { itemId: getIt("Runthrough NS Coronary Guidewire", "0.014in x 180cm"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
+          { itemId: getIt("Coronary Y-Connector Kit", "Push-Click Type"), quantity: 1 }
+        ]
+      },
       {
         code: "MC011A",
-        name: "PCI (Percutaneous Coronary Intervention) Package",
-        ceilingAmount: 62212,
+        name: "PTCA with 1 Stent (PCI)",
+        ceilingAmount: 67966,
         defaultConsumables: [
           { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
           { itemId: getIt("Launcher Guide Catheter", "JL4 6F"), quantity: 1 },
@@ -318,29 +359,37 @@ export const resetDatabase = async () => {
         ]
       },
       {
-        code: "MC016A",
-        name: "PPI (Permanent Pacemaker - Double Chamber) Package",
-        ceilingAmount: 108000,
-        defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath", "5F 11cm"), quantity: 1 },
-          { itemId: getIt("Adapta Dual Chamber Pacemaker", "ADDR01 (Dual Chamber)"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 }
-        ]
-      },
-      {
-        code: "MC005A",
-        name: "BMV (Balloon Mitral Valvuloplasty) Package",
-        ceilingAmount: 90700,
+        code: "MC011B",
+        name: "PTCA with 2 Stents (PCI)",
+        ceilingAmount: 103800,
         defaultConsumables: [
           { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
+          { itemId: getIt("Launcher Guide Catheter", "JL4 6F"), quantity: 1 },
+          { itemId: getIt("Runthrough NS Coronary Guidewire", "0.014in x 180cm"), quantity: 1 },
           { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
-          { itemId: getIt("Inoue BMV Balloon", "26mm"), quantity: 1 }
+          { itemId: getIt("Coronary Y-Connector Kit", "Push-Click Type"), quantity: 1 },
+          { itemId: getIt("XIENCE Sierra Everolimus-Eluting Stent", "3.00mm x 18mm"), quantity: 1 },
+          { itemId: getIt("Resolute Onyx Zotarolimus-Eluting Stent", "2.75mm x 22mm"), quantity: 1 }
         ]
       },
       {
-        code: "MC007A",
-        name: "ASD Device Closure Package",
-        ceilingAmount: 98900,
+        code: "MC011C",
+        name: "PTCA with 3 Stents (PCI)",
+        ceilingAmount: 139634,
+        defaultConsumables: [
+          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
+          { itemId: getIt("Launcher Guide Catheter", "JL4 6F"), quantity: 1 },
+          { itemId: getIt("Runthrough NS Coronary Guidewire", "0.014in x 180cm"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
+          { itemId: getIt("Coronary Y-Connector Kit", "Push-Click Type"), quantity: 1 },
+          { itemId: getIt("XIENCE Sierra Everolimus-Eluting Stent", "3.00mm x 18mm"), quantity: 2 },
+          { itemId: getIt("Resolute Onyx Zotarolimus-Eluting Stent", "2.75mm x 22mm"), quantity: 1 }
+        ]
+      },
+      {
+        code: "MC007",
+        name: "ASD Device Closure",
+        ceilingAmount: 113735,
         defaultConsumables: [
           { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
           { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
@@ -348,9 +397,15 @@ export const resetDatabase = async () => {
         ]
       },
       {
-        code: "MC009A",
-        name: "PDA Device Closure Package",
-        ceilingAmount: 62600,
+        code: "MC008",
+        name: "VSD Device Closure",
+        ceilingAmount: 126385,
+        defaultConsumables: []
+      },
+      {
+        code: "MC009",
+        name: "PDA Device Closure",
+        ceilingAmount: 71990,
         defaultConsumables: [
           { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
           { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
@@ -358,14 +413,70 @@ export const resetDatabase = async () => {
         ]
       },
       {
-        code: "MC015A",
-        name: "PPI (Permanent Pacemaker - Single Chamber) Package",
-        ceilingAmount: 69500,
+        code: "MC010",
+        name: "PDA stenting",
+        ceilingAmount: 46299,
+        defaultConsumables: []
+      },
+      {
+        code: "MC017",
+        name: "Peripheral Angioplasty",
+        ceilingAmount: 63825,
+        defaultConsumables: []
+      },
+
+      // 3. Catheterization & Balloon Dilatation Packages (with 15% NABH markup)
+      {
+        code: "MC001A",
+        name: "Right Heart Catheterization",
+        ceilingAmount: 11500,
+        defaultConsumables: []
+      },
+      {
+        code: "MC001B",
+        name: "Left Heart Catheterization",
+        ceilingAmount: 11500,
+        defaultConsumables: []
+      },
+      {
+        code: "MC005",
+        name: "Balloon Mitral Valvotomy (BMV)",
+        ceilingAmount: 104305,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath", "5F 11cm"), quantity: 1 },
-          { itemId: getIt("Assurity MRI Single Chamber Pacemaker", "PM1272 (Single Chamber)"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 }
+          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
+          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
+          { itemId: getIt("Inoue BMV Balloon", "26mm"), quantity: 1 }
         ]
+      },
+      {
+        code: "MC006",
+        name: "Balloon Atrial Septostomy",
+        ceilingAmount: 28060,
+        defaultConsumables: []
+      },
+      {
+        code: "MC003A",
+        name: "Coarctation of Aorta",
+        ceilingAmount: 0,
+        defaultConsumables: []
+      },
+      {
+        code: "MC003B",
+        name: "Pulmonary Artery Stenosis",
+        ceilingAmount: 0,
+        defaultConsumables: []
+      },
+      {
+        code: "MC004A",
+        name: "Balloon Pulmonary Valvotomy",
+        ceilingAmount: 0,
+        defaultConsumables: []
+      },
+      {
+        code: "MC004B",
+        name: "Balloon Aortic Valvotomy",
+        ceilingAmount: 0,
+        defaultConsumables: []
       }
     ];
 
