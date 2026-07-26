@@ -45,11 +45,18 @@ function App() {
           localStorage.setItem('cathlab_consultants_reset_v2', 'true');
         }
 
-        // Always check and seed local IndexedDB
-        const count = await db.pmjayPackages.count();
-        if (count === 0) {
-          console.log("Local database is empty. Seeding default items and packages...");
+        // Check if we have seeded the new Excel rate contract items
+        const excelSeeded = localStorage.getItem('cathlab_excel_seeded_v3');
+        if (!excelSeeded) {
+          console.log("Seeding new MPPHSCL Live Rate Contract items and packages...");
           await resetDatabase();
+          localStorage.setItem('cathlab_excel_seeded_v3', 'true');
+        } else {
+          // Fallback check
+          const count = await db.pmjayPackages.count();
+          if (count === 0) {
+            await resetDatabase();
+          }
         }
       } catch (err) {
         console.error("Error checking or seeding database:", err);
