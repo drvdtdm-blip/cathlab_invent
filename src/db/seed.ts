@@ -67,7 +67,7 @@ export const resetDatabase = async () => {
         ceilingAmount: 28175,
         defaultConsumables: [
           { itemId: getIt("Radial/Brachial introducer sheath()", "202507008"), quantity: 1 },
-          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 }
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist)", "Non Lonic Iodine Base Contrast Media 370mg 100ml"), quantity: 1 }
         ]
       },
       {
@@ -76,7 +76,7 @@ export const resetDatabase = async () => {
         ceilingAmount: 37950,
         defaultConsumables: [
           { itemId: getIt("Radial/Brachial introducer sheath()", "202507008"), quantity: 1 },
-          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 }
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist)", "Non Lonic Iodine Base Contrast Media 370mg 100ml"), quantity: 1 }
         ]
       },
 
@@ -87,9 +87,9 @@ export const resetDatabase = async () => {
         ceilingAmount: 32132,
         defaultConsumables: [
           { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
-          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F"), quantity: 1 },
+          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm"), quantity: 1 },
           { itemId: getIt("Steerable PTCA guide wires, 0.014, 180 -190 cm long, straight tip, duo core design for kink resistance with distal tip spring coil along with distal hydrophilic and silicon coating and PTFE coating of rest of the wire length with tip load  of 0.6 gm()", "202507002"), quantity: 1 },
-          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist)", "Non Lonic Iodine Base Contrast Media 370mg 100ml"), quantity: 1 },
           { itemId: getIt("Y-Connector Hemostatic valve(Type- push and release)", "Type- push and release"), quantity: 1 }
         ]
       },
@@ -99,9 +99,9 @@ export const resetDatabase = async () => {
         ceilingAmount: 67966,
         defaultConsumables: [
           { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
-          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F"), quantity: 1 },
+          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm"), quantity: 1 },
           { itemId: getIt("Steerable PTCA guide wires, 0.014, 180 -190 cm long, straight tip, duo core design for kink resistance with distal tip spring coil along with distal hydrophilic and silicon coating and PTFE coating of rest of the wire length with tip load  of 0.6 gm()", "202507002"), quantity: 1 },
-          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist)", "Non Lonic Iodine Base Contrast Media 370mg 100ml"), quantity: 1 },
           { itemId: getIt("Y-Connector Hemostatic valve(Type- push and release)", "Type- push and release"), quantity: 1 },
           { itemId: getIt("Everolimus stents(biostable polymer)", "biostable polymer"), quantity: 1 }
         ]
@@ -112,9 +112,9 @@ export const resetDatabase = async () => {
         ceilingAmount: 103800,
         defaultConsumables: [
           { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
-          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F"), quantity: 1 },
+          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm"), quantity: 1 },
           { itemId: getIt("Steerable PTCA guide wires, 0.014, 180 -190 cm long, straight tip, duo core design for kink resistance with distal tip spring coil along with distal hydrophilic and silicon coating and PTFE coating of rest of the wire length with tip load  of 0.6 gm()", "202507002"), quantity: 1 },
-          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist)", "Non Lonic Iodine Base Contrast Media 370mg 100ml"), quantity: 1 },
           { itemId: getIt("Y-Connector Hemostatic valve(Type- push and release)", "Type- push and release"), quantity: 1 },
           { itemId: getIt("Everolimus stents(biostable polymer)", "biostable polymer"), quantity: 1 },
           { itemId: getIt("Zotarolimus(stents)", "stents"), quantity: 1 }
@@ -126,9 +126,9 @@ export const resetDatabase = async () => {
         ceilingAmount: 139634,
         defaultConsumables: [
           { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
-          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F"), quantity: 1 },
+          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm"), quantity: 1 },
           { itemId: getIt("Steerable PTCA guide wires, 0.014, 180 -190 cm long, straight tip, duo core design for kink resistance with distal tip spring coil along with distal hydrophilic and silicon coating and PTFE coating of rest of the wire length with tip load  of 0.6 gm()", "202507002"), quantity: 1 },
-          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist)", "Non Lonic Iodine Base Contrast Media 370mg 100ml"), quantity: 1 },
           { itemId: getIt("Y-Connector Hemostatic valve(Type- push and release)", "Type- push and release"), quantity: 1 },
           { itemId: getIt("Everolimus stents(biostable polymer)", "biostable polymer"), quantity: 2 },
           { itemId: getIt("Zotarolimus(stents)", "stents"), quantity: 1 }
@@ -140,7 +140,7 @@ export const resetDatabase = async () => {
         ceilingAmount: 113735,
         defaultConsumables: [
           { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
-          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist)", "Non Lonic Iodine Base Contrast Media 370mg 100ml"), quantity: 1 },
           { itemId: getIt("Sizing balloon for ASD(Circular shape)", "Circular shape"), quantity: 1 }
         ]
       },
@@ -156,7 +156,7 @@ export const resetDatabase = async () => {
         ceilingAmount: 71990,
         defaultConsumables: [
           { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
-          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 }
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist)", "Non Lonic Iodine Base Contrast Media 370mg 100ml"), quantity: 1 }
         ]
       },
       {
@@ -191,7 +191,7 @@ export const resetDatabase = async () => {
         ceilingAmount: 104305,
         defaultConsumables: [
           { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
-          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist)", "Non Lonic Iodine Base Contrast Media 370mg 100ml"), quantity: 1 },
           { itemId: getIt("PTMC Balloon with accessories(without vent tube)", "without vent tube"), quantity: 1 }
         ]
       },

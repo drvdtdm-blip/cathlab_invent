@@ -46,11 +46,11 @@ function App() {
         }
 
         // Check if we have seeded the new Excel rate contract items
-        const excelSeeded = localStorage.getItem('cathlab_excel_seeded_v3');
+        const excelSeeded = localStorage.getItem('cathlab_excel_seeded_v4');
         if (!excelSeeded) {
           console.log("Seeding new MPPHSCL Live Rate Contract items and packages...");
           await resetDatabase();
-          localStorage.setItem('cathlab_excel_seeded_v3', 'true');
+          localStorage.setItem('cathlab_excel_seeded_v4', 'true');
         } else {
           // Fallback check
           const count = await db.pmjayPackages.count();
