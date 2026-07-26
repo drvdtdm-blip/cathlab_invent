@@ -2,263 +2,7 @@ import { db, type Item, type PmjayPackage, type LedgerEntry } from './db';
 import { rateContractItems } from './rateContractItems';
 
 // Realistic Cath Lab Items Seed Data
-const originalSeedItems: Omit<Item, 'id'>[] = [
-  {
-    name: "XIENCE Sierra Everolimus-Eluting Stent",
-    category: "stent",
-    manufacturer: "Abbott",
-    modelSize: "3.00mm x 18mm",
-    batchLotNo: "XSR-10293",
-    expiryDate: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 180 days out
-    unitCost: 23600,
-    currentQuantity: 12,
-    reorderLevel: 3,
-    storageLocation: "Cabinet A-1"
-  },
-  {
-    name: "Resolute Onyx Zotarolimus-Eluting Stent",
-    category: "stent",
-    manufacturer: "Medtronic",
-    modelSize: "2.75mm x 22mm",
-    batchLotNo: "RON-99482",
-    expiryDate: new Date(Date.now() + 240 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 240 days out
-    unitCost: 23600,
-    currentQuantity: 10,
-    reorderLevel: 3,
-    storageLocation: "Cabinet A-2"
-  },
-  {
-    name: "Synergy Everolimus-Eluting Stent",
-    category: "stent",
-    manufacturer: "Boston Scientific",
-    modelSize: "3.25mm x 16mm",
-    batchLotNo: "SYN-33821",
-    expiryDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Expiring in 25 days! (Low stock & Expiry warning)
-    unitCost: 23600,
-    currentQuantity: 2,
-    reorderLevel: 3,
-    storageLocation: "Cabinet A-1"
-  },
-  {
-    name: "Sapphire II NC PTCA Balloon",
-    category: "balloon",
-    manufacturer: "OrbusNeich",
-    modelSize: "2.50mm x 12mm",
-    batchLotNo: "SNC-22048",
-    expiryDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 7500,
-    currentQuantity: 15,
-    reorderLevel: 4,
-    storageLocation: "Drawer B-3"
-  },
-  {
-    name: "Emerge PTCA Dilatation Balloon",
-    category: "balloon",
-    manufacturer: "Boston Scientific",
-    modelSize: "2.00mm x 15mm",
-    batchLotNo: "EMG-77491",
-    expiryDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Expiring in 15 days
-    unitCost: 6800,
-    currentQuantity: 8,
-    reorderLevel: 4,
-    storageLocation: "Drawer B-4"
-  },
-  {
-    name: "Inoue BMV Balloon",
-    category: "balloon",
-    manufacturer: "Toray",
-    modelSize: "26mm",
-    batchLotNo: "INO-44021",
-    expiryDate: new Date(Date.now() + 400 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 42000,
-    currentQuantity: 4,
-    reorderLevel: 1,
-    storageLocation: "Cabinet C-1"
-  },
-  {
-    name: "Adapta Dual Chamber Pacemaker",
-    category: "pacemaker",
-    manufacturer: "Medtronic",
-    modelSize: "ADDR01 (Dual Chamber)",
-    batchLotNo: "ADP-33291",
-    expiryDate: new Date(Date.now() + 720 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 115000,
-    currentQuantity: 5,
-    reorderLevel: 1,
-    storageLocation: "Pacemaker Shelf 1"
-  },
-  {
-    name: "Assurity MRI Single Chamber Pacemaker",
-    category: "pacemaker",
-    manufacturer: "Abbott",
-    modelSize: "PM1272 (Single Chamber)",
-    batchLotNo: "ASS-88192",
-    expiryDate: new Date(Date.now() + 50 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Expiring in 50 days
-    unitCost: 85000,
-    currentQuantity: 3,
-    reorderLevel: 1,
-    storageLocation: "Pacemaker Shelf 2"
-  },
-  {
-    name: "Radifocus Introducer II Sheath",
-    category: "sheath",
-    manufacturer: "Terumo",
-    modelSize: "6F 11cm",
-    batchLotNo: "RAD-66712",
-    expiryDate: new Date(Date.now() + 300 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 1200,
-    currentQuantity: 30,
-    reorderLevel: 10,
-    storageLocation: "Drawer C-1"
-  },
-  {
-    name: "Radifocus Introducer II Sheath",
-    category: "sheath",
-    manufacturer: "Terumo",
-    modelSize: "5F 11cm",
-    batchLotNo: "RAD-55102",
-    expiryDate: new Date(Date.now() + 290 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 1200,
-    currentQuantity: 20,
-    reorderLevel: 8,
-    storageLocation: "Drawer C-2"
-  },
-  {
-    name: "Launcher Guide Catheter",
-    category: "catheter",
-    manufacturer: "Medtronic",
-    modelSize: "JL4 6F",
-    batchLotNo: "LGC-44812",
-    expiryDate: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 8500,
-    currentQuantity: 10,
-    reorderLevel: 3,
-    storageLocation: "Catheter Hanger 1"
-  },
-  {
-    name: "Launcher Guide Catheter",
-    category: "catheter",
-    manufacturer: "Medtronic",
-    modelSize: "JR4 6F",
-    batchLotNo: "LGC-44919",
-    expiryDate: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 8500,
-    currentQuantity: 10,
-    reorderLevel: 3,
-    storageLocation: "Catheter Hanger 2"
-  },
-  {
-    name: "Judkins Diagnostic Catheter",
-    category: "catheter",
-    manufacturer: "Cordis",
-    modelSize: "JL4 5F",
-    batchLotNo: "JDC-10928",
-    expiryDate: new Date(Date.now() + 500 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 2200,
-    currentQuantity: 15,
-    reorderLevel: 5,
-    storageLocation: "Catheter Hanger 4"
-  },
-  {
-    name: "Judkins Diagnostic Catheter",
-    category: "catheter",
-    manufacturer: "Cordis",
-    modelSize: "JR4 5F",
-    batchLotNo: "JDC-10929",
-    expiryDate: new Date(Date.now() + 500 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 2200,
-    currentQuantity: 15,
-    reorderLevel: 5,
-    storageLocation: "Catheter Hanger 5"
-  },
-  {
-    name: "Runthrough NS Coronary Guidewire",
-    category: "guidewire",
-    manufacturer: "Terumo",
-    modelSize: "0.014in x 180cm",
-    batchLotNo: "RUN-99218",
-    expiryDate: new Date(Date.now() + 450 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 4500,
-    currentQuantity: 25,
-    reorderLevel: 8,
-    storageLocation: "Guidewire Rack A"
-  },
-  {
-    name: "Whisper MS Guidewire",
-    category: "guidewire",
-    manufacturer: "Abbott",
-    modelSize: "0.014in x 190cm",
-    batchLotNo: "WHI-00291",
-    expiryDate: new Date(Date.now() + 110 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 5200,
-    currentQuantity: 12,
-    reorderLevel: 4,
-    storageLocation: "Guidewire Rack B"
-  },
-  {
-    name: "Angio-Seal VIP Vascular Closure Device",
-    category: "closure device",
-    manufacturer: "Terumo",
-    modelSize: "6F",
-    batchLotNo: "ASE-88491",
-    expiryDate: new Date(Date.now() + 95 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Expiring in 95 days
-    unitCost: 13500,
-    currentQuantity: 8,
-    reorderLevel: 2,
-    storageLocation: "Cabinet B-1"
-  },
-  {
-    name: "Amplatzer Septal Occluder",
-    category: "closure device",
-    manufacturer: "Abbott",
-    modelSize: "ASD 24mm",
-    batchLotNo: "ASD-24018",
-    expiryDate: new Date(Date.now() + 600 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 180000,
-    currentQuantity: 3,
-    reorderLevel: 1,
-    storageLocation: "Cabinet C-3"
-  },
-  {
-    name: "Amplatzer Duct Occluder",
-    category: "closure device",
-    manufacturer: "Abbott",
-    modelSize: "PDA 8/6",
-    batchLotNo: "PDA-08061",
-    expiryDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Expired 5 days ago! (Expired Alert)
-    unitCost: 125000,
-    currentQuantity: 1,
-    reorderLevel: 1,
-    storageLocation: "Cabinet C-3"
-  },
-  {
-    name: "Omnipaque Contrast Media 350mg/ml",
-    category: "consumable",
-    manufacturer: "GE Healthcare",
-    modelSize: "100ml",
-    batchLotNo: "OMN-55281",
-    expiryDate: new Date(Date.now() + 300 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 1800,
-    currentQuantity: 40,
-    reorderLevel: 15,
-    storageLocation: "Contrast Room A"
-  },
-  {
-    name: "Coronary Y-Connector Kit",
-    category: "consumable",
-    manufacturer: "Merit Medical",
-    modelSize: "Push-Click Type",
-    batchLotNo: "YCK-11029",
-    expiryDate: new Date(Date.now() + 400 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    unitCost: 3200,
-    currentQuantity: 20,
-    reorderLevel: 6,
-    storageLocation: "Drawer E-2"
-  }
-];
-
 const seedItems: Omit<Item, 'id'>[] = [
-  ...originalSeedItems,
   ...rateContractItems
 ];
 
@@ -322,9 +66,8 @@ export const resetDatabase = async () => {
         name: "Permanent Pacemaker Implantation - Single Chamber (PPI)",
         ceilingAmount: 28175,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath", "5F 11cm"), quantity: 1 },
-          { itemId: getIt("Assurity MRI Single Chamber Pacemaker", "PM1272 (Single Chamber)"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 }
+          { itemId: getIt("Radial/Brachial introducer sheath()", "202507008"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 }
         ]
       },
       {
@@ -332,9 +75,8 @@ export const resetDatabase = async () => {
         name: "Permanent Pacemaker Implantation - Double Chamber (PPI)",
         ceilingAmount: 37950,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath", "5F 11cm"), quantity: 1 },
-          { itemId: getIt("Adapta Dual Chamber Pacemaker", "ADDR01 (Dual Chamber)"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 }
+          { itemId: getIt("Radial/Brachial introducer sheath()", "202507008"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 }
         ]
       },
 
@@ -344,11 +86,11 @@ export const resetDatabase = async () => {
         name: "PTCA, inclusive of diagnostic angiogram (PCI)",
         ceilingAmount: 32132,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
-          { itemId: getIt("Launcher Guide Catheter", "JL4 6F"), quantity: 1 },
-          { itemId: getIt("Runthrough NS Coronary Guidewire", "0.014in x 180cm"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
-          { itemId: getIt("Coronary Y-Connector Kit", "Push-Click Type"), quantity: 1 }
+          { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
+          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F"), quantity: 1 },
+          { itemId: getIt("Steerable PTCA guide wires, 0.014, 180 -190 cm long, straight tip, duo core design for kink resistance with distal tip spring coil along with distal hydrophilic and silicon coating and PTFE coating of rest of the wire length with tip load  of 0.6 gm()", "202507002"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("Y-Connector Hemostatic valve(Type- push and release)", "Type- push and release"), quantity: 1 }
         ]
       },
       {
@@ -356,12 +98,12 @@ export const resetDatabase = async () => {
         name: "PTCA with 1 Stent (PCI)",
         ceilingAmount: 67966,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
-          { itemId: getIt("Launcher Guide Catheter", "JL4 6F"), quantity: 1 },
-          { itemId: getIt("Runthrough NS Coronary Guidewire", "0.014in x 180cm"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
-          { itemId: getIt("Coronary Y-Connector Kit", "Push-Click Type"), quantity: 1 },
-          { itemId: getIt("XIENCE Sierra Everolimus-Eluting Stent", "3.00mm x 18mm"), quantity: 1 }
+          { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
+          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F"), quantity: 1 },
+          { itemId: getIt("Steerable PTCA guide wires, 0.014, 180 -190 cm long, straight tip, duo core design for kink resistance with distal tip spring coil along with distal hydrophilic and silicon coating and PTFE coating of rest of the wire length with tip load  of 0.6 gm()", "202507002"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("Y-Connector Hemostatic valve(Type- push and release)", "Type- push and release"), quantity: 1 },
+          { itemId: getIt("Everolimus stents(biostable polymer)", "biostable polymer"), quantity: 1 }
         ]
       },
       {
@@ -369,13 +111,13 @@ export const resetDatabase = async () => {
         name: "PTCA with 2 Stents (PCI)",
         ceilingAmount: 103800,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
-          { itemId: getIt("Launcher Guide Catheter", "JL4 6F"), quantity: 1 },
-          { itemId: getIt("Runthrough NS Coronary Guidewire", "0.014in x 180cm"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
-          { itemId: getIt("Coronary Y-Connector Kit", "Push-Click Type"), quantity: 1 },
-          { itemId: getIt("XIENCE Sierra Everolimus-Eluting Stent", "3.00mm x 18mm"), quantity: 1 },
-          { itemId: getIt("Resolute Onyx Zotarolimus-Eluting Stent", "2.75mm x 22mm"), quantity: 1 }
+          { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
+          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F"), quantity: 1 },
+          { itemId: getIt("Steerable PTCA guide wires, 0.014, 180 -190 cm long, straight tip, duo core design for kink resistance with distal tip spring coil along with distal hydrophilic and silicon coating and PTFE coating of rest of the wire length with tip load  of 0.6 gm()", "202507002"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("Y-Connector Hemostatic valve(Type- push and release)", "Type- push and release"), quantity: 1 },
+          { itemId: getIt("Everolimus stents(biostable polymer)", "biostable polymer"), quantity: 1 },
+          { itemId: getIt("Zotarolimus(stents)", "stents"), quantity: 1 }
         ]
       },
       {
@@ -383,13 +125,13 @@ export const resetDatabase = async () => {
         name: "PTCA with 3 Stents (PCI)",
         ceilingAmount: 139634,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
-          { itemId: getIt("Launcher Guide Catheter", "JL4 6F"), quantity: 1 },
-          { itemId: getIt("Runthrough NS Coronary Guidewire", "0.014in x 180cm"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
-          { itemId: getIt("Coronary Y-Connector Kit", "Push-Click Type"), quantity: 1 },
-          { itemId: getIt("XIENCE Sierra Everolimus-Eluting Stent", "3.00mm x 18mm"), quantity: 2 },
-          { itemId: getIt("Resolute Onyx Zotarolimus-Eluting Stent", "2.75mm x 22mm"), quantity: 1 }
+          { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
+          { itemId: getIt("Femoral Guiding Catheters - Judkins left without side holes (Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F)", "Curves 3, 3.5, 4, 5 cm),(Size 5F/6F/7F/8F"), quantity: 1 },
+          { itemId: getIt("Steerable PTCA guide wires, 0.014, 180 -190 cm long, straight tip, duo core design for kink resistance with distal tip spring coil along with distal hydrophilic and silicon coating and PTFE coating of rest of the wire length with tip load  of 0.6 gm()", "202507002"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("Y-Connector Hemostatic valve(Type- push and release)", "Type- push and release"), quantity: 1 },
+          { itemId: getIt("Everolimus stents(biostable polymer)", "biostable polymer"), quantity: 2 },
+          { itemId: getIt("Zotarolimus(stents)", "stents"), quantity: 1 }
         ]
       },
       {
@@ -397,9 +139,9 @@ export const resetDatabase = async () => {
         name: "ASD Device Closure",
         ceilingAmount: 113735,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
-          { itemId: getIt("Amplatzer Septal Occluder", "ASD 24mm"), quantity: 1 }
+          { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("Sizing balloon for ASD(Circular shape)", "Circular shape"), quantity: 1 }
         ]
       },
       {
@@ -413,9 +155,8 @@ export const resetDatabase = async () => {
         name: "PDA Device Closure",
         ceilingAmount: 71990,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
-          { itemId: getIt("Amplatzer Duct Occluder", "PDA 8/6"), quantity: 1 }
+          { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 }
         ]
       },
       {
@@ -449,9 +190,9 @@ export const resetDatabase = async () => {
         name: "Balloon Mitral Valvotomy (BMV)",
         ceilingAmount: 104305,
         defaultConsumables: [
-          { itemId: getIt("Radifocus Introducer II Sheath", "6F 11cm"), quantity: 1 },
-          { itemId: getIt("Omnipaque Contrast Media 350mg/ml", "100ml"), quantity: 1 },
-          { itemId: getIt("Inoue BMV Balloon", "26mm"), quantity: 1 }
+          { itemId: getIt("Adult Femoral introducer sheath- 10-12 cm long()", "202507005"), quantity: 1 },
+          { itemId: getIt("Iopromide(Non Lonic Iodine Base Contrast Media 370mg 100ml)", "Non Lonic Iodine Base Contrast Media 370mg 100ml)(Make bayer AG Model ultravist"), quantity: 1 },
+          { itemId: getIt("PTMC Balloon with accessories(without vent tube)", "without vent tube"), quantity: 1 }
         ]
       },
       {
