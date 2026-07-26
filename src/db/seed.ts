@@ -1,7 +1,8 @@
 import { db, type Item, type PmjayPackage, type LedgerEntry } from './db';
+import { rateContractItems } from './rateContractItems';
 
 // Realistic Cath Lab Items Seed Data
-const seedItems: Omit<Item, 'id'>[] = [
+const originalSeedItems: Omit<Item, 'id'>[] = [
   {
     name: "XIENCE Sierra Everolimus-Eluting Stent",
     category: "stent",
@@ -254,6 +255,11 @@ const seedItems: Omit<Item, 'id'>[] = [
     reorderLevel: 6,
     storageLocation: "Drawer E-2"
   }
+];
+
+const seedItems: Omit<Item, 'id'>[] = [
+  ...originalSeedItems,
+  ...rateContractItems
 ];
 
 // Predefined PMJAY Package Configurations & default consumable arrays
